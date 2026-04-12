@@ -1,15 +1,17 @@
 // FILE: src/app/[locale]/contact/page.tsx
 // ROUTE: /contact
 // PURPOSE: Contact page — quick contact cards, step form, WhatsApp CTA,
-//          office locations, social links
+//          office locations, social links pulled from Sanity siteSettings
 // STYLING: Tailwind v4 inline classes only
 
 import { Metadata } from 'next'
-import Navbar        from '@/components/layout/Navbar'
-import Footer        from '@/components/layout/Footer'
-import EventBanner   from '@/components/layout/EventBanner'
-import WhatsAppFloat from '@/components/ui/WhatsAppFloat'
-import ContactForm   from '@/components/contact/ContactForm'
+import Navbar              from '@/components/layout/Navbar'
+import Footer              from '@/components/layout/Footer'
+import EventBanner         from '@/components/layout/EventBanner'
+import WhatsAppFloatServer from '@/components/ui/WhatsAppFloatServer'
+import ContactForm         from '@/components/contact/ContactForm'
+import { client, SITE_SETTINGS_QUERY } from '@/sanity/client'
+import type { SiteSettings } from '@/types'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -30,18 +32,34 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const { locale } = await params
   const isSw = locale === 'sw'
 
+  const settings: SiteSettings | null = client
+    ? await client.fetch(SITE_SETTINGS_QUERY)
+    : null
+
+  const phone1  = settings?.phone1         || '+254 743456817'
+  const phone2  = settings?.phone2         || '+256 751173929'
+  const email   = settings?.email          || 'carolmwenda09@gmail.com'
+  const addrNbi = settings?.addressNairobi || 'Nairobi, Kenya'
+  const addrKla = settings?.addressKampala || 'Kampala, Uganda'
+
   const quickCards = [
-    { icon: '📞', labelEn: 'Call us',      labelSw: 'Piga Simu',        valueEn: '+254 743456817\n+256 751173929', valueSw: '+254 743456817\n+256 751173929' },
-    { icon: '✉️', labelEn: 'Email us',     labelSw: 'Tuma Barua Pepe',  valueEn: 'carolmwenda09@gmail.com',        valueSw: 'carolmwenda09@gmail.com' },
-    { icon: '🕐', labelEn: 'Office hours', labelSw: 'Masaa ya Ofisi',   valueEn: 'Mon–Sat: 8am – 6pm EAT',        valueSw: 'Jumatatu–Jumamosi: 8asubuhi – 6jioni' },
-    { icon: '📍', labelEn: 'Offices',      labelSw: 'Ofisi',            valueEn: 'Nairobi, Kenya\nKampala, Uganda', valueSw: 'Nairobi, Kenya\nKampala, Uganda' },
+    { icon: '📞', labelEn: 'Call us',      labelSw: 'Piga Simu',      value: `${phone1}\n${phone2}` },
+    { icon: '✉️', labelEn: 'Email us',     labelSw: 'Barua Pepe',     value: email },
+    { icon: '🕐', labelEn: 'Office hours', labelSw: 'Masaa ya Ofisi', value: isSw ? 'Jumatatu–Jumamosi: 8asubuhi – 6jioni' : 'Mon–Sat: 8am – 6pm EAT' },
+    { icon: '📍', labelEn: 'Offices',      labelSw: 'Ofisi',          value: `${addrNbi.split('\n')[0]}\n${addrKla.split('\n')[0]}` },
   ]
 
-  const socials = [
-    { icon: <LinkedInIcon />,  label: 'LinkedIn',  href: '#', bg: '#0A66C2' },
-    { icon: <TikTokIcon />,    label: 'TikTok',    href: '#', bg: '#000000' },
-    { icon: <InstagramIcon />, label: 'Instagram', href: '#', bg: '#E1306C' },
-    { icon: <FacebookIcon />,  label: 'Facebook',  href: '#', bg: '#1877F2' },
+  const allSocials = [
+    { icon: <LinkedInIcon />,  label: 'LinkedIn',  href: settings?.linkedin,  bg: '#0A66C2' },
+    { icon: <TikTokIcon />,    label: 'TikTok',    href: settings?.tiktok,    bg: '#000000' },
+    { icon: <InstagramIcon />, label: 'Instagram', href: settings?.instagram, bg: '#E1306C' },
+    { icon: <FacebookIcon />,  label: 'Facebook',  href: settings?.facebook,  bg: '#1877F2' },
+  ]
+  const socials = allSocials.filter((s): s is typeof s & { href: string } => !!s.href)
+
+  const offices = [
+    { city: 'Nairobi, Kenya',  addr: addrNbi, phone: phone1 },
+    { city: 'Kampala, Uganda', addr: addrKla, phone: phone2 },
   ]
 
   return (
@@ -50,7 +68,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       <Navbar />
       <main>
         {/* Hero */}
-        <section className="bg-teal-700 py-14 px-6 relative overflow-hidden">
+        <section className="bg-teal-700 py-12 md:py-14 px-4 sm:px-6 relative overflow-hidden">
           <div className="absolute right-0 top-0 w-56 h-56 bg-teal-600 rounded-full translate-x-1/3 -translate-y-1/3 opacity-50" />
           <div className="max-w-7xl mx-auto relative">
             <p className="text-yellow-300 text-xs font-bold uppercase tracking-widest mb-3">
@@ -70,8 +88,8 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
         {/* Quick cards */}
         <section className="bg-teal-50 border-b border-teal-100">
-          <div className="max-w-7xl mx-auto px-6 py-5">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {quickCards.map((card) => (
                 <div key={card.labelEn} className="bg-white rounded-xl p-4 flex items-start gap-3 border border-teal-100 hover:border-teal-300 transition-colors">
                   <div className="w-9 h-9 bg-teal-50 rounded-lg flex items-center justify-center text-lg shrink-0">{card.icon}</div>
@@ -80,7 +98,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
                       {isSw ? card.labelSw : card.labelEn}
                     </p>
                     <p className="text-teal-700 text-xs font-semibold whitespace-pre-line leading-relaxed">
-                      {isSw ? card.valueSw : card.valueEn}
+                      {card.value}
                     </p>
                   </div>
                 </div>
@@ -90,7 +108,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
         </section>
 
         {/* Form */}
-        <section className="py-14 px-6 bg-white">
+        <section className="py-10 md:py-14 px-4 sm:px-6 bg-white">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-teal-700 text-2xl font-extrabold mb-1">
               {isSw ? 'Tuma ujumbe' : 'Send us a message'}
@@ -103,17 +121,14 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
         </section>
 
         {/* Offices */}
-        <section className="py-12 px-6 bg-teal-50 border-t-2 border-teal-100">
+        <section className="py-10 md:py-12 px-4 sm:px-6 bg-teal-50 border-t-2 border-teal-100">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-teal-700 text-xl font-extrabold mb-2">
               {isSw ? 'Ofisi Zetu' : 'Our Offices'}
             </h2>
             <div className="yellow-bar mb-6" />
             <div className="grid md:grid-cols-2 gap-5">
-              {[
-                { city: 'Nairobi, Kenya',  addr: 'Bukoto Kisaasi Road, Above Qualiworth Supermarket\nWestlands, Nairobi Centre', phone: '+254 743456817' },
-                { city: 'Kampala, Uganda', addr: 'Ktishna Center, Westlands\nKampala, Uganda',                                  phone: '+256 751173929' },
-              ].map((o) => (
+              {offices.map((o) => (
                 <div key={o.city} className="bg-white border-l-4 border-yellow-300 rounded-r-2xl p-5">
                   <h3 className="text-teal-700 font-bold text-base mb-2">{o.city}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed whitespace-pre-line mb-2">{o.addr}</p>
@@ -125,26 +140,32 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
         </section>
 
         {/* Social */}
-        <section className="bg-teal-700 py-10 px-6">
+        <section className="bg-teal-700 py-10 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto">
             <h3 className="text-yellow-300 font-bold text-sm uppercase tracking-wider mb-4">
               {isSw ? 'Tufuate' : 'Follow us'}
             </h3>
-            <div className="flex flex-wrap gap-3">
-              {socials.map((s) => (
-                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-white text-sm font-bold px-4 py-2.5 rounded-full hover:opacity-85 transition-opacity"
-                  style={{ backgroundColor: s.bg }}
-                >
-                  {s.icon} {s.label}
-                </a>
-              ))}
-            </div>
+            {socials.length > 0 ? (
+              <div className="flex flex-wrap gap-3">
+                {socials.map((s) => (
+                  <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-white text-sm font-bold px-4 py-2.5 rounded-full hover:opacity-85 transition-opacity"
+                    style={{ backgroundColor: s.bg }}
+                  >
+                    {s.icon} {s.label}
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <p className="text-white/50 text-sm">
+                {isSw ? 'Viungo vya mitandao ya kijamii vinakuja hivi karibuni.' : 'Social links coming soon — add them in Studio → Site Settings.'}
+              </p>
+            )}
           </div>
         </section>
       </main>
       <Footer />
-      <WhatsAppFloat />
+      <WhatsAppFloatServer />
     </>
   )
 }

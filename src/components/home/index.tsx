@@ -1,3 +1,5 @@
+'use client'
+
 // FILE: src/components/home/index.tsx
 // PURPOSE: Homepage section components (except Hero)
 //   ServicesGrid        — 6 service cards in 3-col grid
@@ -10,6 +12,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { urlFor } from '@/sanity/client'
 import { SectionHeading } from '@/components/ui/index'
+import { localePath } from '@/i18n/routing'
 import type { Testimonial, FeaturedEvent } from '@/types'
 
 // ── Services data ─────────────────────────────────────────
@@ -26,7 +29,7 @@ const services = [
 export function ServicesGrid({ locale }: { locale: string }) {
   const isSw = locale === 'sw'
   return (
-    <section className="py-16 px-6 bg-white">
+    <section className="py-12 md:py-16 px-4 sm:px-6 bg-white">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <SectionHeading
@@ -55,14 +58,14 @@ export function ServicesGrid({ locale }: { locale: string }) {
                   </li>
                 ))}
               </ul>
-              <Link href="/contact" className="text-teal-500 text-sm font-bold hover:text-teal-700 transition-colors">
+              <Link href={localePath('/contact', locale)} className="text-teal-500 text-sm font-bold hover:text-teal-700 transition-colors">
                 {isSw ? 'Uliza →' : 'Enquire →'}
               </Link>
             </div>
           ))}
         </div>
         <div className="text-center mt-10">
-          <Link href="/services" className="bg-teal-500 text-white font-bold px-8 py-4 rounded-xl hover:bg-teal-700 active:scale-95 transition-all inline-block">
+          <Link href={localePath('/services', locale)} className="bg-teal-500 text-white font-bold px-8 py-4 rounded-xl hover:bg-teal-700 active:scale-95 transition-all inline-block">
             {isSw ? 'Ona Huduma Zote' : 'View All Services'}
           </Link>
         </div>
@@ -99,7 +102,7 @@ export function Testimonials({ testimonials, locale }: { testimonials: Testimoni
   const items = testimonials?.length ? testimonials : fallback
 
   return (
-    <section className="py-16 px-6 bg-teal-50">
+    <section className="py-12 md:py-16 px-4 sm:px-6 bg-teal-50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <SectionHeading
@@ -145,13 +148,13 @@ export function FeaturedEventSection({ event, locale }: { event: FeaturedEvent |
   const ctaLabel     = isSw && event.ctaLabelSw     ? event.ctaLabelSw     : event.ctaLabelEn
 
   return (
-    <section className="py-16 px-6 bg-teal-700 relative overflow-hidden">
+    <section className="py-12 md:py-16 px-4 sm:px-6 bg-teal-700 relative overflow-hidden">
       <div className="absolute right-0 top-0 w-64 h-64 bg-teal-600 rounded-full translate-x-1/2 -translate-y-1/2 opacity-50" />
       <div className="max-w-7xl mx-auto relative">
-        <div className="bg-yellow-300 text-teal-700 text-xs font-bold px-4 py-1.5 rounded-lg inline-block mb-6">
+        <div className="bg-yellow-300 text-teal-700 text-xs font-bold px-4 py-1.5 rounded-lg inline-block mb-6 max-w-full break-words">
           ✏️ Admin: Update from /studio → Featured Event
         </div>
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-10 items-center">
           <div>
             <p className="text-yellow-300 text-xs font-bold uppercase tracking-widest mb-3">
               {isSw ? 'Tukio Maalum' : 'Featured Event'}
@@ -161,9 +164,11 @@ export function FeaturedEventSection({ event, locale }: { event: FeaturedEvent |
             {event.deadline && <p className="text-yellow-300 font-semibold mb-4">📅 {event.deadline}</p>}
             {requirements  && <p className="text-white/65 text-sm mb-6">{requirements}</p>}
             <div className="flex flex-wrap gap-4">
-              <Link href={event.ctaLink} className="bg-yellow-300 text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all">
-                {ctaLabel || 'Apply Now'}
-              </Link>
+              {event.ctaLink && (
+                <Link href={event.ctaLink} className="bg-yellow-300 text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all">
+                  {ctaLabel || 'Apply Now'}
+                </Link>
+              )}
               {event.learnMoreLink && (
                 <Link href={event.learnMoreLink} className="border-2 border-white text-white font-bold px-8 py-4 rounded-xl hover:bg-white/10 active:scale-95 transition-all">
                   {isSw ? 'Jifunze Zaidi' : 'Learn More'}

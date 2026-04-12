@@ -105,7 +105,7 @@ export function StatsBar() {
   ]
   return (
     <div className="bg-teal-500">
-      <div className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-3 md:grid-cols-5 gap-4">
         {stats.map((s) => (
           <div key={s.label} className="text-center">
             <div className="text-yellow-300 text-3xl font-extrabold">{s.value}</div>
@@ -148,7 +148,7 @@ export function NewsletterStrip({ variant = 'dark' }: { variant?: 'dark' | 'ligh
             {t('success')}
           </p>
         ) : (
-          <form onSubmit={handleSubmit} className="flex gap-2 max-w-md mx-auto">
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
             <input
               type="email" value={email} onChange={(e) => setEmail(e.target.value)}
               placeholder={t('placeholder')} required

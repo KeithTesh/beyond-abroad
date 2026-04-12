@@ -10,7 +10,7 @@ import Link from 'next/link'
 import Navbar        from '@/components/layout/Navbar'
 import Footer        from '@/components/layout/Footer'
 import EventBanner   from '@/components/layout/EventBanner'
-import WhatsAppFloat from '@/components/ui/WhatsAppFloat'
+import WhatsAppFloatServer from '@/components/ui/WhatsAppFloatServer'
 import { client, FEATURED_EVENT_QUERY, EVENTS_QUERY, urlFor } from '@/sanity/client'
 import type { FeaturedEvent, Event } from '@/types'
 
@@ -57,7 +57,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
       <Navbar />
       <main>
         {/* Hero */}
-        <section className="bg-teal-700 py-16 px-6 relative overflow-hidden">
+        <section className="bg-teal-700 py-12 md:py-16 px-4 sm:px-6 relative overflow-hidden">
           <div className="absolute right-0 top-0 w-64 h-64 bg-teal-600 rounded-full translate-x-1/2 -translate-y-1/2 opacity-50" />
           <div className="max-w-7xl mx-auto relative">
             <div className="yellow-bar mb-4" />
@@ -72,9 +72,9 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
 
         {/* Featured event — editable from Sanity */}
         {featuredEvent && (
-          <section className="py-12 px-6 bg-teal-700">
+          <section className="py-8 md:py-12 px-4 sm:px-6 bg-teal-700">
             <div className="max-w-7xl mx-auto">
-              <div className="bg-yellow-300 text-teal-700 text-xs font-bold px-4 py-1.5 rounded-lg inline-block mb-6">
+              <div className="bg-yellow-300 text-teal-700 text-xs font-bold px-4 py-1.5 rounded-lg inline-block mb-6 max-w-full break-words">
                 ✏️ Admin: Edit from /studio → Featured Event (Homepage Banner)
               </div>
               <div className="bg-teal-800 rounded-2xl overflow-hidden grid lg:grid-cols-2">
@@ -99,9 +99,11 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
                     <p className="text-white/65 text-sm mb-6">{isSw ? featuredEvent.requirementsSw : featuredEvent.requirementsEn}</p>
                   )}
                   <div className="flex flex-wrap gap-3">
-                    <Link href={featuredEvent.ctaLink} className="bg-yellow-300 text-teal-700 font-bold px-6 py-3 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all">
-                      {(isSw ? featuredEvent.ctaLabelSw : featuredEvent.ctaLabelEn) || 'Apply Now'}
-                    </Link>
+                    {featuredEvent.ctaLink && (
+                      <Link href={featuredEvent.ctaLink} className="bg-yellow-300 text-teal-700 font-bold px-6 py-3 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all">
+                        {(isSw ? featuredEvent.ctaLabelSw : featuredEvent.ctaLabelEn) || 'Apply Now'}
+                      </Link>
+                    )}
                     {featuredEvent.learnMoreLink && (
                       <Link href={featuredEvent.learnMoreLink} className="border-2 border-white text-white font-bold px-6 py-3 rounded-xl hover:bg-white/10 active:scale-95 transition-all">
                         {isSw ? 'Jifunze Zaidi' : 'Learn More'}
@@ -115,7 +117,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
         )}
 
         {/* Events grid */}
-        <section className="py-14 px-6 bg-teal-50">
+        <section className="py-10 md:py-14 px-4 sm:px-6 bg-teal-50">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-teal-700 text-2xl font-extrabold mb-2">
               {isSw ? 'Matukio Yanayokuja' : 'Upcoming Events'}
@@ -166,7 +168,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
         </section>
       </main>
       <Footer />
-      <WhatsAppFloat />
+      <WhatsAppFloatServer />
     </>
   )
 }

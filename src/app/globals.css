@@ -5,7 +5,6 @@
    USED BY: src/app/[locale]/layout.tsx */
 
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ── Design tokens ─────────────────────────────────────── */
 @theme {
@@ -86,5 +85,20 @@
     height: 0.25rem;
     background-color: #F5C72E;
     border-radius: 9999px;
+  }
+
+  /* Hide scrollbar while keeping scroll functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Better touch targets for interactive elements */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
   }
 }

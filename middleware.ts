@@ -1,15 +1,7 @@
-// FILE: middleware.ts
-// PURPOSE: Intercepts every request, detects locale, redirects to /en or /sw
-// EXCLUDES: /api  /studio  /_next  static files
-
 import createMiddleware from 'next-intl/middleware'
-import { locales, defaultLocale } from './i18n'
+import { routing } from './src/i18n/routing'
 
-export default createMiddleware({
-  locales,
-  defaultLocale,
-  localePrefix: 'as-needed',
-})
+export default createMiddleware(routing)
 
 export const config = {
   matcher: ['/((?!api|studio|_next|_vercel|.*\\..*).*)'],

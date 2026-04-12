@@ -4,13 +4,14 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { resend, AUDIENCE_ID, FROM_EMAIL } from '@/lib/resend'
+import { getResend, AUDIENCE_ID, FROM_EMAIL } from '@/lib/resend'
 
 const schema = z.object({ email: z.string().email() })
 
 export async function POST(req: NextRequest) {
   try {
     const { email } = schema.parse(await req.json())
+    const resend = getResend()
 
     await resend.contacts.create({ email, audienceId: AUDIENCE_ID, unsubscribed: false })
 

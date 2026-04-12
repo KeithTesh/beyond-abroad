@@ -9,7 +9,8 @@ import Link from 'next/link'
 import Navbar        from '@/components/layout/Navbar'
 import Footer        from '@/components/layout/Footer'
 import EventBanner   from '@/components/layout/EventBanner'
-import WhatsAppFloat from '@/components/ui/WhatsAppFloat'
+import WhatsAppFloatServer from '@/components/ui/WhatsAppFloatServer'
+import { localePath } from '@/i18n/routing'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -53,7 +54,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       <Navbar />
       <main>
         {/* Hero */}
-        <section className="bg-teal-700 py-16 px-6 relative overflow-hidden">
+        <section className="bg-teal-700 py-12 md:py-16 px-4 sm:px-6 relative overflow-hidden">
           <div className="absolute right-0 top-0 w-72 h-72 bg-teal-600 rounded-full translate-x-1/3 -translate-y-1/2 opacity-50" />
           <div className="max-w-7xl mx-auto relative">
             <div className="yellow-bar mb-4" />
@@ -69,8 +70,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         </section>
 
         {/* Bio */}
-        <section className="py-16 px-6 bg-white">
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-5 gap-10 items-start">
+        <section className="py-10 md:py-16 px-4 sm:px-6 bg-white">
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-5 gap-6 lg:gap-10 items-start">
             <div className="lg:col-span-2">
               <div className="bg-teal-100 rounded-2xl aspect-[3/4] flex items-center justify-center">
                 <div className="text-center">
@@ -106,7 +107,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         </section>
 
         {/* Certifications */}
-        <section className="py-12 px-6 bg-teal-50">
+        <section className="py-10 md:py-12 px-4 sm:px-6 bg-teal-50">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-teal-700 text-2xl font-extrabold mb-2">
               {isSw ? 'Vyeti na Utambuzi' : 'Certifications & Recognitions'}
@@ -124,7 +125,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         </section>
 
         {/* Why us */}
-        <section className="py-14 px-6 bg-teal-700">
+        <section className="py-10 md:py-14 px-4 sm:px-6 bg-teal-700">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-yellow-300 text-2xl font-extrabold mb-8 text-center">
               {isSw ? 'Kwa Nini Wanafunzi Wanachagua Beyond Abroad' : 'Why Students Choose Beyond Abroad'}
@@ -142,7 +143,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         </section>
 
         {/* Partners */}
-        <section className="py-12 px-6 bg-white">
+        <section className="py-10 md:py-12 px-4 sm:px-6 bg-white">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-teal-700 text-2xl font-extrabold mb-2">
               {isSw ? 'Washirika Wetu' : 'Our Partners'}
@@ -160,7 +161,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         </section>
 
         {/* Offices */}
-        <section className="py-12 px-6 bg-teal-50">
+        <section className="py-10 md:py-12 px-4 sm:px-6 bg-teal-50">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-teal-700 text-2xl font-extrabold mb-2">
               {isSw ? 'Ofisi Zetu' : 'Our Offices'}
@@ -182,20 +183,20 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         </section>
 
         {/* CTA */}
-        <section className="bg-teal-700 py-12 px-6 border-t-4 border-yellow-300 text-center">
+        <section className="bg-teal-700 py-10 md:py-12 px-4 sm:px-6 border-t-4 border-yellow-300 text-center">
           <h3 className="text-white text-2xl font-extrabold mb-2">
             {isSw ? 'Tayari kuanza safari yako?' : 'Ready to start your journey?'}
           </h3>
           <p className="text-white/70 text-sm mb-6">
             {isSw ? 'Piga simu ya bure leo.' : 'Book a free consultation today.'}
           </p>
-          <Link href="/contact" className="bg-yellow-300 text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all inline-block">
+          <Link href={localePath('/contact', locale)} className="bg-yellow-300 text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all inline-block">
             {isSw ? 'Wasiliana Nasi' : 'Get In Touch'}
           </Link>
         </section>
       </main>
       <Footer />
-      <WhatsAppFloat />
+      <WhatsAppFloatServer />
     </>
   )
 }

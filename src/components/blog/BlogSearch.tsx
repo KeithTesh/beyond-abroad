@@ -29,10 +29,10 @@ export default function BlogSearch({ posts, locale, categories }: {
             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
           </svg>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide flex-nowrap sm:flex-wrap">
           {categories.map(cat => (
             <button key={cat.value} onClick={() => setActiveCategory(cat.value)}
-              className={`text-xs font-bold px-4 py-2 rounded-full transition-all ${activeCategory === cat.value ? 'bg-teal-500 text-white' : 'bg-teal-50 text-teal-600 hover:bg-teal-100'}`}
+              className={`text-xs font-bold px-4 py-2 rounded-full transition-all shrink-0 ${activeCategory === cat.value ? 'bg-teal-500 text-white' : 'bg-teal-50 text-teal-600 hover:bg-teal-100'}`}
             >
               {isSw ? cat.labelSw : cat.labelEn}
             </button>

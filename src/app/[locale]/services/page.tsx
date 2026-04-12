@@ -9,7 +9,8 @@ import Link from 'next/link'
 import Navbar        from '@/components/layout/Navbar'
 import Footer        from '@/components/layout/Footer'
 import EventBanner   from '@/components/layout/EventBanner'
-import WhatsAppFloat from '@/components/ui/WhatsAppFloat'
+import WhatsAppFloatServer from '@/components/ui/WhatsAppFloatServer'
+import { localePath } from '@/i18n/routing'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -70,7 +71,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       <Navbar />
       <main>
         {/* Hero */}
-        <section className="bg-teal-700 py-16 px-6 relative overflow-hidden">
+        <section className="bg-teal-700 py-12 md:py-16 px-4 sm:px-6 relative overflow-hidden">
           <div className="absolute right-0 top-0 w-64 h-64 bg-teal-600 rounded-full translate-x-1/2 -translate-y-1/2 opacity-50" />
           <div className="max-w-7xl mx-auto relative">
             <div className="yellow-bar mb-4" />
@@ -84,10 +85,10 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
         </section>
 
         {/* Cards */}
-        <section className="py-16 px-6 bg-teal-50">
-          <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-6">
+        <section className="py-12 md:py-16 px-4 sm:px-6 bg-teal-50">
+          <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-5 md:gap-6">
             {services.map((sv) => (
-              <div key={sv.titleEn} className="bg-white rounded-2xl p-6 border border-teal-100 hover:border-teal-300 transition-all" style={{ borderLeft: '4px solid #0E5C5C', borderRadius: '0 16px 16px 0' }}>
+              <div key={sv.titleEn} className="bg-white rounded-2xl p-5 md:p-6 border border-teal-100 hover:border-teal-300 transition-all" style={{ borderLeft: '4px solid #0E5C5C', borderRadius: '0 16px 16px 0' }}>
                 <div className="flex items-start gap-4 mb-4">
                   <span className="text-3xl">{sv.icon}</span>
                   <h2 className="text-teal-700 font-extrabold text-xl">{isSw ? sv.titleSw : sv.titleEn}</h2>
@@ -101,7 +102,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                     </li>
                   ))}
                 </ul>
-                <Link href="/contact" className="inline-block bg-teal-500 text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-teal-700 active:scale-95 transition-all">
+                <Link href={localePath('/contact', locale)} className="inline-block bg-teal-500 text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-teal-700 active:scale-95 transition-all">
                   {isSw ? 'Uliza →' : 'Enquire →'}
                 </Link>
               </div>
@@ -110,8 +111,8 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
         </section>
 
         {/* CTA band */}
-        <section className="bg-teal-700 py-10 px-6 border-t-4 border-yellow-300">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <section className="bg-teal-700 py-10 px-4 sm:px-6 border-t-4 border-yellow-300">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
             <div>
               <h3 className="text-white text-2xl font-extrabold mb-1">
                 {isSw ? 'Hujui huduma unayohitaji?' : 'Not sure which service you need?'}
@@ -120,14 +121,14 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                 {isSw ? 'Piga simu ya bure — hakuna dhamana inayohitajika.' : 'Book a free consultation — no commitment, just clarity.'}
               </p>
             </div>
-            <Link href="/contact" className="shrink-0 bg-yellow-300 text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all">
+            <Link href={localePath('/contact', locale)} className="shrink-0 bg-yellow-300 text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all">
               {isSw ? 'Piga Simu ya Bure' : 'Book Free Consultation'}
             </Link>
           </div>
         </section>
       </main>
       <Footer />
-      <WhatsAppFloat />
+      <WhatsAppFloatServer />
     </>
   )
 }

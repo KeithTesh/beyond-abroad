@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { resend, FROM_EMAIL, CONTACT_TO } from '@/lib/resend'
+import { getResend, FROM_EMAIL, CONTACT_TO } from '@/lib/resend'
 
 const schema = z.object({
   name:        z.string().min(2),
@@ -19,6 +19,7 @@ const schema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const data = schema.parse(await req.json())
+    const resend = getResend()
 
     // 1. Notify Caroline
     await resend.emails.send({

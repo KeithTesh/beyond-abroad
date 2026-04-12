@@ -9,10 +9,13 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link   from 'next/link'
+import { useLocale } from 'next-intl'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import { localePath } from '@/i18n/routing'
 
 export default function UnsubscribePage() {
+  const locale = useLocale()
   const searchParams = useSearchParams()
   const email = searchParams.get('email') || ''
   const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
@@ -43,7 +46,7 @@ export default function UnsubscribePage() {
               <p className="text-gray-500 text-sm mb-6">
                 <strong>{email}</strong> has been removed from the Beyond Abroad newsletter.
               </p>
-              <Link href="/" className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
+              <Link href={localePath('/', locale)} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
                 Back to Home
               </Link>
             </>
@@ -55,7 +58,7 @@ export default function UnsubscribePage() {
               <p className="text-gray-500 text-sm mb-6">
                 Please email us at <strong>carolmwenda09@gmail.com</strong> and we will remove you manually.
               </p>
-              <Link href="/" className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
+              <Link href={localePath('/', locale)} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
                 Back to Home
               </Link>
             </>
@@ -65,7 +68,7 @@ export default function UnsubscribePage() {
               <div className="text-5xl mb-4">❓</div>
               <h1 className="text-teal-700 text-2xl font-extrabold mb-3">No email provided</h1>
               <p className="text-gray-500 text-sm mb-6">Please use the unsubscribe link in your email.</p>
-              <Link href="/" className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
+              <Link href={localePath('/', locale)} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
                 Back to Home
               </Link>
             </>

@@ -9,9 +9,10 @@ import Link          from 'next/link'
 import Navbar        from '@/components/layout/Navbar'
 import Footer        from '@/components/layout/Footer'
 import EventBanner   from '@/components/layout/EventBanner'
-import WhatsAppFloat from '@/components/ui/WhatsAppFloat'
+import WhatsAppFloatServer from '@/components/ui/WhatsAppFloatServer'
 import FaqAccordion  from '@/components/faq/FaqAccordion'
 import { client, FAQ_QUERY } from '@/sanity/client'
+import { localePath } from '@/i18n/routing'
 import type { FaqItem } from '@/types'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -56,7 +57,7 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
       <Navbar />
       <main>
         {/* Hero */}
-        <section className="bg-teal-700 py-16 px-6 relative overflow-hidden">
+        <section className="bg-teal-700 py-12 md:py-16 px-4 sm:px-6 relative overflow-hidden">
           <div className="absolute right-0 top-0 w-64 h-64 bg-teal-600 rounded-full translate-x-1/2 -translate-y-1/2 opacity-50" />
           <div className="max-w-7xl mx-auto relative">
             <div className="yellow-bar mb-4" />
@@ -70,27 +71,27 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
         </section>
 
         {/* Accordion — client component */}
-        <section className="py-14 px-6 bg-teal-50">
+        <section className="py-10 md:py-14 px-4 sm:px-6 bg-teal-50">
           <div className="max-w-3xl mx-auto">
             <FaqAccordion items={items} locale={locale} />
           </div>
         </section>
 
         {/* CTA */}
-        <section className="bg-teal-700 py-14 px-6 text-center border-t-4 border-yellow-300">
+        <section className="bg-teal-700 py-10 md:py-14 px-4 sm:px-6 text-center border-t-4 border-yellow-300">
           <h2 className="text-white text-2xl font-extrabold mb-2">
             {isSw ? 'Bado una maswali?' : 'Still have questions?'}
           </h2>
           <p className="text-white/70 text-sm mb-6">
             {isSw ? 'Piga simu ya bure ya mtu mmoja na Caroline.' : 'Book a free one-on-one consultation with Caroline.'}
           </p>
-          <Link href="/contact" className="bg-yellow-300 text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all inline-block">
+          <Link href={localePath('/contact', locale)} className="bg-yellow-300 text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all inline-block">
             {isSw ? 'Piga Simu ya Bure' : 'Book Free Consultation'}
           </Link>
         </section>
       </main>
       <Footer />
-      <WhatsAppFloat />
+      <WhatsAppFloatServer />
     </>
   )
 }

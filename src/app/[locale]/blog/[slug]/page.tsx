@@ -11,7 +11,8 @@ import { notFound } from 'next/navigation'
 import Navbar        from '@/components/layout/Navbar'
 import Footer        from '@/components/layout/Footer'
 import EventBanner   from '@/components/layout/EventBanner'
-import WhatsAppFloat from '@/components/ui/WhatsAppFloat'
+import WhatsAppFloatServer from '@/components/ui/WhatsAppFloatServer'
+import { localePath } from '@/i18n/routing'
 import { NewsletterStrip } from '@/components/ui/index'
 import { client, BLOG_POST_QUERY, RELATED_POSTS_QUERY, urlFor } from '@/sanity/client'
 import type { BlogPost } from '@/types'
@@ -116,8 +117,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
         </div>
 
         {/* Article */}
-        <div className="max-w-3xl mx-auto px-6 py-12">
-          <Link href="/blog" className="text-teal-500 text-sm font-semibold hover:underline mb-6 inline-block">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+          <Link href={localePath('/blog', locale)} className="text-teal-500 text-sm font-semibold hover:underline mb-6 inline-block">
             ← {isSw ? 'Rudi kwa Blogu' : 'Back to Blog'}
           </Link>
           <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -146,13 +147,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
 
         {/* Related posts */}
         {related?.length > 0 && (
-          <section className="py-14 px-6 bg-teal-50">
+          <section className="py-10 md:py-14 px-4 sm:px-6 bg-teal-50">
             <div className="max-w-7xl mx-auto">
               <h2 className="text-teal-700 text-2xl font-extrabold mb-2">{isSw ? 'Makala Yanayohusiana' : 'Related Articles'}</h2>
               <div className="yellow-bar mb-6" />
               <div className="grid md:grid-cols-3 gap-5">
                 {related.map(rp => (
-                  <Link key={rp._id} href={`/blog/${rp.slug.current}`}
+                  <Link key={rp._id} href={localePath(`/blog/${rp.slug.current}`, locale)}
                     className="group bg-white border border-teal-100 rounded-2xl overflow-hidden hover:border-teal-300 transition-all">
                     <div className="relative aspect-video bg-teal-100">
                       {rp.coverImage
@@ -174,7 +175,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
         )}
       </main>
       <Footer />
-      <WhatsAppFloat />
+      <WhatsAppFloatServer />
     </>
   )
 }

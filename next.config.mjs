@@ -1,10 +1,9 @@
-// FILE: next.config.ts
-// PURPOSE: Next.js config — allowed image domains, studio security header
-// USED BY: Next.js build pipeline
+import createNextIntlPlugin from 'next-intl/plugin'
 
-import type { NextConfig } from 'next'
+const withNextIntl = createNextIntlPlugin('./i18n.ts')
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'cdn.sanity.io' },
@@ -21,4 +20,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withNextIntl(nextConfig)

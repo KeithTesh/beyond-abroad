@@ -4,13 +4,14 @@
 // USED BY: src/app/[locale]/unsubscribe/page.tsx
 
 import { NextRequest, NextResponse } from 'next/server'
-import { resend, AUDIENCE_ID } from '@/lib/resend'
+import { getResend, AUDIENCE_ID } from '@/lib/resend'
 
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json()
     if (!email) return NextResponse.json({ error: 'Email required' }, { status: 400 })
 
+    const resend = getResend()
     const contacts = await resend.contacts.list({ audienceId: AUDIENCE_ID })
     const contact  = contacts.data?.data?.find((c: { email: string }) => c.email === email)
 

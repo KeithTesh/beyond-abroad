@@ -1,0 +1,90 @@
+/* FILE: src/app/globals.css
+   PURPOSE: Tailwind v4 CSS-first configuration — NO tailwind.config.ts needed.
+            All design tokens (colors, fonts, shadows, animations) live here via @theme.
+            @import "tailwindcss" replaces the old @tailwind base/components/utilities.
+   USED BY: src/app/[locale]/layout.tsx */
+
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ── Design tokens ─────────────────────────────────────── */
+@theme {
+  /* Teal palette — used as bg-teal-500, text-teal-700 etc. */
+  --color-teal-50:  #E8F5F2;
+  --color-teal-100: #C5E8E0;
+  --color-teal-200: #8ECFC4;
+  --color-teal-300: #4AADA0;
+  --color-teal-400: #1A8A7E;
+  --color-teal-500: #0E5C5C;
+  --color-teal-600: #0A4A4A;
+  --color-teal-700: #073D3D;
+  --color-teal-800: #052B2B;
+  --color-teal-900: #031C1C;
+
+  /* Yellow palette */
+  --color-yellow-50:  #FFFBEA;
+  --color-yellow-100: #FFF3C4;
+  --color-yellow-200: #FCE588;
+  --color-yellow-300: #F5C72E;
+  --color-yellow-400: #E6B800;
+  --color-yellow-500: #C9A000;
+  --color-yellow-600: #A68200;
+  --color-yellow-700: #856600;
+  --color-yellow-800: #634C00;
+  --color-yellow-900: #423200;
+
+  /* Font family — used as font-sans */
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+
+  /* Custom shadows — used as shadow-teal-md etc. */
+  --shadow-teal-sm:     0 2px 8px rgba(7,61,61,0.08);
+  --shadow-teal-md:     0 4px 20px rgba(7,61,61,0.12);
+  --shadow-teal-lg:     0 8px 40px rgba(7,61,61,0.16);
+  --shadow-yellow-glow: 0 4px 20px rgba(245,199,46,0.25);
+
+  /* Animations */
+  --animate-fade-in:  fadeIn 0.5s ease-in-out;
+  --animate-slide-up: slideUp 0.5s ease-out;
+}
+
+/* ── Keyframes ─────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Base styles ───────────────────────────────────────── */
+@layer base {
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-family-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: #F5C72E;
+    color: #073D3D;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #E8F5F2; }
+  ::-webkit-scrollbar-thumb { background: #0E5C5C; border-radius: 3px; }
+}
+
+/* ── Reusable utilities ────────────────────────────────── */
+@layer utilities {
+  /* Yellow accent bar — used as className="yellow-bar" */
+  .yellow-bar {
+    width: 3rem;
+    height: 0.25rem;
+    background-color: #F5C72E;
+    border-radius: 9999px;
+  }
+}

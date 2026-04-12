@@ -1,0 +1,22 @@
+# FILE: .gitignore
+# CRITICAL: .env.local contains secret keys — never commit it
+
+node_modules
+.pnpm-store
+.next
+out
+build
+.env
+.env.local
+.env.*.local
+.sanity
+.DS_Store
+Thumbs.db
+*.pem
+.idea
+.vscode
+npm-debug.log*
+pnpm-debug.log*
+.vercel
+*.tsbuildinfo
+next-env.d.ts

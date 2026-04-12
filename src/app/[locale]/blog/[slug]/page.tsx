@@ -1,0 +1,180 @@
+// FILE: src/app/[locale]/blog/[slug]/page.tsx
+// ROUTE: /blog/[slug]
+// PURPOSE: Individual blog post — cover image or video embed, rich portable text
+//          body (with inline images + videos), author card, related posts, newsletter CTA
+// STYLING: Tailwind v4 inline classes only
+
+import { Metadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import Navbar        from '@/components/layout/Navbar'
+import Footer        from '@/components/layout/Footer'
+import EventBanner   from '@/components/layout/EventBanner'
+import WhatsAppFloat from '@/components/ui/WhatsAppFloat'
+import { NewsletterStrip } from '@/components/ui/index'
+import { client, BLOG_POST_QUERY, RELATED_POSTS_QUERY, urlFor } from '@/sanity/client'
+import type { BlogPost } from '@/types'
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
+  const { slug, locale } = await params
+  const post: BlogPost = await client.fetch(BLOG_POST_QUERY, { slug })
+  if (!post) return { title: 'Post Not Found' }
+  return {
+    title:       locale === 'sw' && post.titleSw ? post.titleSw : post.titleEn,
+    description: post.excerpt,
+    openGraph:   { images: post.coverImage ? [{ url: urlFor(post.coverImage).width(1200).height(630).url() }] : [] },
+  }
+}
+
+function getEmbedUrl(url: string) {
+  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}`
+  const vm = url.match(/vimeo\.com\/(\d+)/)
+  if (vm) return `https://player.vimeo.com/video/${vm[1]}`
+  return null
+}
+
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
+function renderBody(blocks: unknown[]) {
+  if (!blocks) return null
+  return blocks.map((block: unknown, i: number) => {
+    const b = block as Record<string, unknown>
+    if (b._type === 'block') {
+      const style    = (b.style as string) || 'normal'
+      const children = (b.children as Array<{ text: string; marks?: string[] }>) || []
+      const text     = children.map((c, ci) => {
+        let el: React.ReactNode = c.text
+        if (c.marks?.includes('strong')) el = <strong key={ci}>{el}</strong>
+        if (c.marks?.includes('em'))     el = <em key={ci}>{el}</em>
+        if (c.marks?.includes('code'))   el = <code key={ci} className="bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded text-sm font-mono">{el}</code>
+        return el
+      })
+      if (style === 'h2')         return <h2 key={i} className="text-teal-700 text-2xl font-extrabold mt-8 mb-3">{text}</h2>
+      if (style === 'h3')         return <h3 key={i} className="text-teal-600 text-xl font-bold mt-6 mb-2">{text}</h3>
+      if (style === 'blockquote') return <blockquote key={i} className="border-l-4 border-yellow-300 pl-4 italic text-gray-500 my-4">{text}</blockquote>
+      return <p key={i} className="text-gray-600 leading-relaxed mb-4">{text}</p>
+    }
+    if (b._type === 'image') {
+      const img = b as { asset?: unknown; alt?: string; caption?: string }
+      if (!img.asset) return null
+      return (
+        <figure key={i} className="my-6">
+          <div className="relative aspect-video rounded-2xl overflow-hidden">
+            <Image src={urlFor(img as Parameters<typeof urlFor>[0]).width(900).height(506).url()} alt={img.alt || ''} fill className="object-cover" />
+          </div>
+          {img.caption && <figcaption className="text-center text-gray-400 text-sm mt-2">{img.caption}</figcaption>}
+        </figure>
+      )
+    }
+    if (b._type === 'videoEmbed') {
+      const v = b as { url?: string; caption?: string }
+      if (!v.url) return null
+      const embed = getEmbedUrl(v.url)
+      return (
+        <figure key={i} className="my-6">
+          {embed
+            ? <div className="relative aspect-video rounded-2xl overflow-hidden bg-black"><iframe src={embed} className="absolute inset-0 w-full h-full" allowFullScreen /></div>
+            : <a href={v.url} target="_blank" rel="noopener noreferrer" className="text-teal-500 underline">{v.url}</a>
+          }
+          {v.caption && <figcaption className="text-center text-gray-400 text-sm mt-2">{v.caption}</figcaption>}
+        </figure>
+      )
+    }
+    return null
+  })
+}
+
+export default async function BlogPostPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params
+  const isSw = locale === 'sw'
+
+  const post: BlogPost = await client.fetch(BLOG_POST_QUERY, { slug })
+  if (!post) notFound()
+
+  const related: BlogPost[] = await client.fetch(RELATED_POSTS_QUERY, { slug, category: post.category })
+  const title   = isSw && post.titleSw ? post.titleSw : post.titleEn
+  const body    = isSw && post.bodySw?.length ? post.bodySw : post.bodyEn
+  const embedUrl = post.coverVideo ? getEmbedUrl(post.coverVideo) : null
+
+  return (
+    <>
+      <EventBanner locale={locale} />
+      <Navbar />
+      <main>
+        {/* Cover */}
+        <div className="w-full bg-teal-900">
+          {post.coverVideo && embedUrl
+            ? <div className="relative aspect-video max-h-[520px] overflow-hidden"><iframe src={embedUrl} className="absolute inset-0 w-full h-full" allowFullScreen /></div>
+            : post.coverImage
+              ? <div className="relative aspect-video max-h-[520px] overflow-hidden"><Image src={urlFor(post.coverImage).width(1440).height(810).url()} alt={post.coverImage.alt || title} fill className="object-cover" priority /></div>
+              : <div className="aspect-video max-h-[300px] flex items-center justify-center bg-teal-700"><span className="text-6xl">📝</span></div>
+          }
+        </div>
+
+        {/* Article */}
+        <div className="max-w-3xl mx-auto px-6 py-12">
+          <Link href="/blog" className="text-teal-500 text-sm font-semibold hover:underline mb-6 inline-block">
+            ← {isSw ? 'Rudi kwa Blogu' : 'Back to Blog'}
+          </Link>
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            {post.category && <span className="bg-teal-100 text-teal-700 text-xs font-bold px-3 py-1 rounded-full capitalize">{post.category.replace('-',' ')}</span>}
+            <span className="text-gray-400 text-sm">{formatDate(post.publishedAt)}</span>
+            {post.readTime && <span className="text-gray-400 text-sm">· {post.readTime} {isSw ? 'dak za kusoma' : 'min read'}</span>}
+          </div>
+          <h1 className="text-teal-700 text-3xl md:text-4xl font-extrabold leading-tight mb-6">{title}</h1>
+          <div className="flex items-center gap-3 mb-8 pb-8 border-b border-teal-100">
+            <div className="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0">CK</div>
+            <div>
+              <p className="text-teal-700 font-semibold text-sm">{post.author}</p>
+              <p className="text-gray-400 text-xs">{isSw ? 'Mwanzilishi, Beyond Abroad' : 'Founder, Beyond Abroad'}</p>
+            </div>
+          </div>
+          <article>{renderBody(body || [])}</article>
+          {post.category && (
+            <div className="mt-10 pt-6 border-t border-teal-100">
+              <span className="text-gray-400 text-xs mr-2">Filed under:</span>
+              <span className="bg-teal-50 text-teal-600 text-xs font-semibold px-3 py-1 rounded-full capitalize">{post.category.replace('-',' ')}</span>
+            </div>
+          )}
+        </div>
+
+        <NewsletterStrip variant="dark" />
+
+        {/* Related posts */}
+        {related?.length > 0 && (
+          <section className="py-14 px-6 bg-teal-50">
+            <div className="max-w-7xl mx-auto">
+              <h2 className="text-teal-700 text-2xl font-extrabold mb-2">{isSw ? 'Makala Yanayohusiana' : 'Related Articles'}</h2>
+              <div className="yellow-bar mb-6" />
+              <div className="grid md:grid-cols-3 gap-5">
+                {related.map(rp => (
+                  <Link key={rp._id} href={`/blog/${rp.slug.current}`}
+                    className="group bg-white border border-teal-100 rounded-2xl overflow-hidden hover:border-teal-300 transition-all">
+                    <div className="relative aspect-video bg-teal-100">
+                      {rp.coverImage
+                        ? <Image src={urlFor(rp.coverImage).width(400).height(225).url()} alt={rp.coverImage.alt || ''} fill className="object-cover" />
+                        : <div className="absolute inset-0 flex items-center justify-center"><span className="text-3xl">📝</span></div>
+                      }
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-teal-700 font-bold text-sm leading-snug mb-2 group-hover:text-teal-500 transition-colors line-clamp-2">
+                        {isSw && rp.titleSw ? rp.titleSw : rp.titleEn}
+                      </h3>
+                      <span className="text-teal-500 text-xs font-bold group-hover:underline">{isSw ? 'Soma →' : 'Read →'}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+      </main>
+      <Footer />
+      <WhatsAppFloat />
+    </>
+  )
+}

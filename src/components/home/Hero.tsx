@@ -1,0 +1,98 @@
+// FILE: src/components/home/Hero.tsx
+// PURPOSE: Homepage hero — bilingual headline, dual CTA buttons,
+//          floating stat cards, student photo placeholder
+// STYLING: Tailwind v4 inline classes only
+
+import Link from 'next/link'
+
+export default function Hero({ locale }: { locale: string }) {
+  const isSw = locale === 'sw'
+
+  return (
+    <section className="bg-teal-700 relative overflow-hidden">
+      {/* Decorative circles */}
+      <div className="absolute right-0 top-0 w-96 h-96 bg-teal-600 rounded-full -translate-y-1/2 translate-x-1/3 opacity-50" />
+      <div className="absolute left-0 bottom-0 w-64 h-64 rounded-full -translate-x-1/4 translate-y-1/2 opacity-5 bg-yellow-300" />
+
+      <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 relative">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+
+          {/* Left */}
+          <div>
+            <p className="text-yellow-300 text-sm font-bold uppercase tracking-widest mb-4">
+              {isSw ? 'Mthibitishwa na British Council' : 'British Council Certified'}
+            </p>
+            <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
+              {isSw ? (
+                <>Njia Yako ya<br /><span className="text-yellow-300">Elimu ya</span><br />Kimataifa</>
+              ) : (
+                <>Your Gateway to<br /><span className="text-yellow-300">International</span><br />Education</>
+              )}
+            </h1>
+            <div className="yellow-bar mb-6" />
+            <p className="text-white/75 text-lg leading-relaxed mb-8 max-w-lg">
+              {isSw
+                ? 'Tunaongoza wanafunzi hatua kwa hatua kufikia ndoto zao za elimu ya kimataifa — kutoka maombi hadi kuwasili, na zaidi ya hapo.'
+                : 'We guide students step-by-step to achieve their international education dreams — from application to arrival, and beyond.'}
+            </p>
+
+            <div className="flex flex-wrap gap-4 mb-10">
+              <Link
+                href="/contact"
+                className="bg-yellow-300 text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all"
+              >
+                {isSw ? 'Anza Safari Yako' : 'Start Your Journey'}
+              </Link>
+              <Link
+                href="/contact"
+                className="border-2 border-white text-white font-bold px-8 py-4 rounded-xl hover:bg-white/10 active:scale-95 transition-all"
+              >
+                {isSw ? 'Piga Simu Bure' : 'Book Free Consult'}
+              </Link>
+            </div>
+
+            <div className="flex flex-wrap gap-6 text-sm text-white/70">
+              <span>🏆 {isSw ? 'Mthibitishwa na British Council' : 'British Council Certified'}</span>
+              <span>🌍 {isSw ? 'Nchi 30+' : '30+ Countries'}</span>
+              <span>🎓 {isSw ? 'Wanafunzi 500+' : '500+ Students Placed'}</span>
+            </div>
+          </div>
+
+          {/* Right — photo + floating stat cards */}
+          <div className="relative">
+            <div className="bg-teal-600 rounded-2xl aspect-[4/3] flex items-center justify-center overflow-hidden">
+              {/* Replace with next/image + real photo once Caroline provides it */}
+              <div className="text-center">
+                <div className="text-6xl mb-3">📸</div>
+                <p className="text-white/50 text-sm">Student photo here</p>
+              </div>
+            </div>
+
+            {/* Floating stat — bottom left */}
+            <div
+              className="absolute -bottom-4 -left-4 bg-white rounded-2xl p-4"
+              style={{ boxShadow: '0 4px 20px rgba(7,61,61,0.12)' }}
+            >
+              <div className="text-teal-700 text-2xl font-extrabold">500+</div>
+              <div className="text-gray-500 text-xs">
+                {isSw ? 'Wanafunzi Waliowekwa' : 'Students Placed'}
+              </div>
+            </div>
+
+            {/* Floating stat — top right */}
+            <div
+              className="absolute -top-4 -right-4 bg-yellow-300 rounded-2xl p-4"
+              style={{ boxShadow: '0 4px 20px rgba(245,199,46,0.25)' }}
+            >
+              <div className="text-teal-700 text-2xl font-extrabold">95%</div>
+              <div className="text-teal-700/70 text-xs">
+                {isSw ? 'Mafanikio ya Visa' : 'Visa Success Rate'}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  )
+}

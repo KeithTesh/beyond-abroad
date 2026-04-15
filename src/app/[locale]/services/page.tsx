@@ -4,6 +4,8 @@
 //          bullet includes, enquiry buttons, CTA band at bottom
 // STYLING: Tailwind v4 inline classes only
 
+export const dynamic = 'force-dynamic'
+
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Navbar        from '@/components/layout/Navbar'
@@ -37,8 +39,8 @@ const services = [
   },
   {
     icon: '📋', titleEn: 'Visa Processing', titleSw: 'Usindikaji wa Visa',
-    descEn: 'Student visas, tourist visas, visit visas — we handle it all. Caroline is British Council certified with a 95% visa success rate across 30+ countries.',
-    descSw: 'Visa za wanafunzi, za utalii, za kutembelea — tunashughulikia zote. Caroline ana cheti cha British Council na kiwango cha mafanikio cha visa cha 95% katika nchi 30+.',
+    descEn: 'Student visas, tourist visas, visit visas — we handle it all. Calorine is British Council certified with a 95% visa success rate across 30+ countries.',
+    descSw: 'Visa za wanafunzi, za utalii, za kutembelea — tunashughulikia zote. Calorine ana cheti cha British Council na kiwango cha mafanikio cha visa cha 95% katika nchi 30+.',
     items: ['Full visa document preparation', 'Interview coaching & mock sessions', 'Biometrics appointment guidance', 'Real-time visa status tracking'],
   },
   {

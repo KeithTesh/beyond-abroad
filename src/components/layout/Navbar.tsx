@@ -6,6 +6,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
@@ -55,9 +56,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href={localize('/')} className="flex items-center gap-2 shrink-0">
-          <div className="w-8 h-8 rounded-full bg-yellow-300 flex items-center justify-center">
-            <span className="text-teal-700 font-extrabold text-xs">BA</span>
-          </div>
+          <Image src="/logo.png" alt="Beyond Abroad" width={48} height={48} className="w-12 h-12 object-contain" />
           <span className="text-yellow-300 font-extrabold text-lg tracking-tight">
             Beyond Abroad
           </span>

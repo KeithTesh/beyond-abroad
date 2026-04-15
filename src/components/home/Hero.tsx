@@ -62,7 +62,7 @@ export default function Hero({ locale }: { locale: string }) {
           {/* Right — photo + floating stat cards */}
           <div className="relative pb-4 md:pb-6">
             <div className="bg-teal-600 rounded-2xl aspect-[4/3] flex items-center justify-center overflow-hidden">
-              {/* Replace with next/image + real photo once Caroline provides it */}
+              {/* Replace with next/image + real photo once Calorine provides it */}
               <div className="text-center">
                 <div className="text-6xl mb-3">📸</div>
                 <p className="text-white/50 text-sm">Student photo here</p>

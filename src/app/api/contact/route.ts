@@ -1,6 +1,6 @@
 // FILE: src/app/api/contact/route.ts
 // ROUTE: POST /api/contact
-// PURPOSE: Validates form data, sends notification email to Caroline
+// PURPOSE: Validates form data, sends notification email to Calorine
 //          and auto-reply confirmation to the visitor via Resend
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     const data = schema.parse(await req.json())
     const resend = getResend()
 
-    // 1. Notify Caroline
+    // 1. Notify Calorine
     await resend.emails.send({
       from: FROM_EMAIL, to: CONTACT_TO,
       subject: `New enquiry from ${data.name} — ${data.service || 'General'}`,
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
           </div>
           <div style="background:#fff;padding:24px;border:1px solid #C5E8E0;border-top:none;border-radius:0 0 8px 8px;">
             <p style="color:#073D3D;font-size:16px;">Hi <strong>${data.name}</strong>,</p>
-            <p style="color:#555;line-height:1.7;">We received your message! Caroline will get back to you within <strong>24 hours</strong>.</p>
+            <p style="color:#555;line-height:1.7;">We received your message! Calorine will get back to you within <strong>24 hours</strong>.</p>
             <p style="color:#555;line-height:1.7;">You can also reach us directly:</p>
             <ul style="color:#555;line-height:2;"><li>WhatsApp: <strong>+254 743456817</strong></li><li>Email: <strong>carolmwenda09@gmail.com</strong></li></ul>
             <p style="color:#073D3D;font-weight:bold;">The Beyond Abroad Team</p>

@@ -4,6 +4,8 @@
 //          office locations, social links pulled from Sanity siteSettings
 // STYLING: Tailwind v4 inline classes only
 
+export const dynamic = 'force-dynamic'
+
 import { Metadata } from 'next'
 import Navbar              from '@/components/layout/Navbar'
 import Footer              from '@/components/layout/Footer'
@@ -114,7 +116,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
               {isSw ? 'Tuma ujumbe' : 'Send us a message'}
             </h2>
             <p className="text-gray-400 text-sm mb-8">
-              {isSw ? 'Jaza fomu na Caroline atajibu ndani ya masaa 24.' : 'Fill in the form and Caroline will reply within 24 hours.'}
+              {isSw ? 'Jaza fomu na Calorine atajibu ndani ya masaa 24.' : 'Fill in the form and Calorine will reply within 24 hours.'}
             </p>
             <ContactForm locale={locale} />
           </div>

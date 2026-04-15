@@ -1,5 +1,5 @@
 // FILE: sanity.config.ts
-// PURPOSE: Sanity Studio config — sidebar layout for Caroline's admin at /studio
+// PURPOSE: Sanity Studio config — sidebar layout for Calorine's admin at /studio
 // USED BY: src/app/studio/[[...tool]]/page.tsx
 
 import { defineConfig } from 'sanity'

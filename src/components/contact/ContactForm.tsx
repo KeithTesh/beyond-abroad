@@ -60,7 +60,7 @@ export default function ContactForm({ locale }: { locale: string }) {
       <div className="text-5xl mb-4">✅</div>
       <h3 className="text-teal-700 font-bold text-xl mb-2">{isSw ? 'Ujumbe umetumwa!' : 'Message sent!'}</h3>
       <p className="text-gray-500 text-sm">
-        {isSw ? 'Caroline atawasiliana nawe ndani ya masaa 24.' : "Caroline will be in touch within 24 hours. Check your email for a confirmation."}
+        {isSw ? 'Calorine atawasiliana nawe ndani ya masaa 24.' : "Calorine will be in touch within 24 hours. Check your email for a confirmation."}
       </p>
     </div>
   )

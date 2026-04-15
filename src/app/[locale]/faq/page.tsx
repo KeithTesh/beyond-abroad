@@ -4,6 +4,8 @@
 //          Sanity has no data yet), CTA band at bottom
 // STYLING: Tailwind v4 inline classes only
 
+export const dynamic = 'force-dynamic'
+
 import { Metadata } from 'next'
 import Link          from 'next/link'
 import Navbar        from '@/components/layout/Navbar'
@@ -83,7 +85,7 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
             {isSw ? 'Bado una maswali?' : 'Still have questions?'}
           </h2>
           <p className="text-white/70 text-sm mb-6">
-            {isSw ? 'Piga simu ya bure ya mtu mmoja na Caroline.' : 'Book a free one-on-one consultation with Caroline.'}
+            {isSw ? 'Piga simu ya bure ya mtu mmoja na Calorine.' : 'Book a free one-on-one consultation with Calorine.'}
           </p>
           <Link href={localePath('/contact', locale)} className="bg-yellow-300 text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-yellow-400 active:scale-95 transition-all inline-block">
             {isSw ? 'Piga Simu ya Bure' : 'Book Free Consultation'}

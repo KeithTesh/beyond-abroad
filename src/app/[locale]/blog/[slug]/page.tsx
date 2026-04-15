@@ -4,6 +4,8 @@
 //          body (with inline images + videos), author card, related posts, newsletter CTA
 // STYLING: Tailwind v4 inline classes only
 
+export const dynamic = 'force-dynamic'
+
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'

@@ -2,6 +2,7 @@
 // PURPOSE: Site-wide footer — pulls contact info + social links from Sanity siteSettings
 // STYLING: Tailwind v4 inline classes only
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { getTranslations, getLocale } from 'next-intl/server'
 import { localePath } from '@/i18n/routing'
@@ -55,9 +56,7 @@ export default async function Footer() {
           {/* Brand + contact */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-full bg-yellow-300 flex items-center justify-center">
-                <span className="text-teal-700 font-extrabold text-xs">BA</span>
-              </div>
+              <Image src="/logo.png" alt="Beyond Abroad" width={48} height={48} className="w-12 h-12 object-contain" />
               <span className="text-yellow-300 font-extrabold text-lg">Beyond Abroad</span>
             </div>
             <p className="text-white/60 text-sm leading-relaxed mb-4">{t('tagline')}</p>

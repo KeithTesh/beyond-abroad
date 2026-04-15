@@ -1,5 +1,5 @@
 // FILE: src/sanity/schemas/index.ts
-// PURPOSE: All Sanity CMS content schemas — defines what Caroline edits in /studio
+// PURPOSE: All Sanity CMS content schemas — defines what Calorine edits in /studio
 // USED BY: sanity.config.ts
 // SCHEMAS: blogPost · event · featuredEvent · testimonial · faqItem · siteSettings
 
@@ -17,7 +17,7 @@ export const blogPost = defineType({
       options: { list: ['canada','uk','australia','germany','scholarships','visa-tips','student-life','applications','guides'].map(v => ({ title: v.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()), value: v })) },
       validation: R => R.required(),
     }),
-    defineField({ name: 'author',      title: 'Author',            type: 'string',   initialValue: 'Caroline Kangai' }),
+    defineField({ name: 'author',      title: 'Author',            type: 'string',   initialValue: 'Calorine Kangai' }),
     defineField({ name: 'publishedAt', title: 'Published At',      type: 'datetime', validation: R => R.required() }),
     defineField({ name: 'published',   title: 'Published (visible on site)', type: 'boolean', initialValue: false }),
     defineField({ name: 'featured',    title: 'Featured Post',     type: 'boolean',  initialValue: false }),

@@ -1,5 +1,8 @@
+export const dynamic = 'force-dynamic'
+
 import { Metadata } from 'next'
-import { client, FEATURED_EVENT_QUERY, TESTIMONIALS_QUERY } from '@/sanity/client'
+import { client, FEATURED_EVENT_QUERY, FEATURED_REGULAR_EVENT_QUERY, TESTIMONIALS_QUERY } from '@/sanity/client'
+import type { FeaturedEvent, Event } from '@/types'
 import Navbar        from '@/components/layout/Navbar'
 import Footer        from '@/components/layout/Footer'
 import EventBanner   from '@/components/layout/EventBanner'
@@ -19,15 +22,34 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
 
-  let featuredEvent = null
+  let featuredEvent: FeaturedEvent | null = null
   let testimonials  = []
 
   if (client) {
     try {
-      [featuredEvent, testimonials] = await Promise.all([
+      const [fe, regularFe, t] = await Promise.all([
         client.fetch(FEATURED_EVENT_QUERY),
+        client.fetch(FEATURED_REGULAR_EVENT_QUERY),
         client.fetch(TESTIMONIALS_QUERY),
       ])
+      testimonials = t
+      if (fe) {
+        featuredEvent = fe
+      } else if (regularFe) {
+        const ev = regularFe as Event & { photo?: FeaturedEvent['image'] }
+        featuredEvent = {
+          titleEn:       ev.titleEn,
+          titleSw:       ev.titleSw,
+          subtitleEn:    ev.shortText,
+          deadline:      ev.deadline,
+          requirementsEn: ev.requirements,
+          image:         ev.photo ?? ({ asset: { _ref: '' } } as FeaturedEvent['image']),
+          ctaLabelEn:    'Apply Now',
+          ctaLabelSw:    'Omba Sasa',
+          ctaLink:       ev.registrationLink ?? '',
+          learnMoreLink: ev.learnMoreLink,
+        }
+      }
     } catch (e) {
       // Sanity not connected yet — pages render with fallback content
     }

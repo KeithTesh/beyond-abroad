@@ -1,19 +1,39 @@
 // FILE: src/components/layout/EventBanner.tsx
 // PURPOSE: Yellow top strip — driven by Sanity featuredEvent.bannerTextEn/Sw
-//          Caroline updates this from /studio → Featured Event
+//          Calorine updates this from /studio → Featured Event
 //          Hidden automatically when no active featured event exists
 // STYLING: Tailwind v4 inline classes only
 
 import Link from 'next/link'
-import { client, FEATURED_EVENT_QUERY } from '@/sanity/client'
-import type { FeaturedEvent } from '@/types'
+import { client, FEATURED_EVENT_QUERY, FEATURED_REGULAR_EVENT_QUERY } from '@/sanity/client'
+import type { FeaturedEvent, Event } from '@/types'
 
 export default async function EventBanner({ locale = 'en' }: { locale?: string }) {
-  const event: FeaturedEvent | null = await client.fetch(FEATURED_EVENT_QUERY)
-  if (!event) return null
+  const [featuredDoc, regularEvent]: [FeaturedEvent | null, (Event & { shortText?: string; registrationLink?: string }) | null] =
+    await Promise.all([
+      client.fetch(FEATURED_EVENT_QUERY),
+      client.fetch(FEATURED_REGULAR_EVENT_QUERY),
+    ])
 
-  const bannerText = locale === 'sw' ? event.bannerTextSw : event.bannerTextEn
-  const ctaLabel   = locale === 'sw' ? event.ctaLabelSw   : event.ctaLabelEn
+  const isSw = locale === 'sw'
+
+  // Prefer dedicated featuredEvent doc; fall back to the first featured regular event
+  let bannerText: string | undefined
+  let ctaLink:   string | undefined
+  let ctaLabel:  string | undefined
+
+  if (featuredDoc) {
+    bannerText = isSw ? featuredDoc.bannerTextSw : featuredDoc.bannerTextEn
+    ctaLink    = featuredDoc.ctaLink
+    ctaLabel   = isSw ? featuredDoc.ctaLabelSw : featuredDoc.ctaLabelEn
+  }
+
+  if (!bannerText && regularEvent) {
+    bannerText = isSw && regularEvent.titleSw ? regularEvent.titleSw : regularEvent.titleEn
+    ctaLink    = regularEvent.registrationLink ?? regularEvent.learnMoreLink
+    ctaLabel   = isSw ? 'Omba Sasa' : 'Apply Now'
+  }
+
   if (!bannerText) return null
 
   return (
@@ -23,9 +43,9 @@ export default async function EventBanner({ locale = 'en' }: { locale?: string }
           <span className="text-teal-700 text-base shrink-0">🎓</span>
           <p className="text-teal-700 text-sm font-bold truncate">{bannerText}</p>
         </div>
-        {event.ctaLink && (
+        {ctaLink && (
           <Link
-            href={event.ctaLink}
+            href={ctaLink}
             className="shrink-0 bg-teal-700 text-yellow-300 text-xs font-bold px-4 py-1.5 rounded-lg hover:bg-teal-800 transition-colors"
           >
             {ctaLabel || 'Apply Now'} →

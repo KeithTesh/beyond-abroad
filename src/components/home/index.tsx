@@ -92,7 +92,7 @@ export function PartnersStrip() {
 
 // ── Testimonials ──────────────────────────────────────────
 const fallback = [
-  { _id: '1', name: 'Amara Wanjiku',  country: 'Now in Canada 🇨🇦',          quote: '"Caroline made the whole process seamless — from IELTS tips to my study permit."',             rating: 5 },
+  { _id: '1', name: 'Amara Wanjiku',  country: 'Now in Canada 🇨🇦',          quote: '"Calorine made the whole process seamless — from IELTS tips to my study permit."',             rating: 5 },
   { _id: '2', name: 'David Omondi',   country: 'Working in UK 🇬🇧',           quote: '"I got a fully funded scholarship I never knew I qualified for. Beyond Abroad changed my life."', rating: 5 },
   { _id: '3', name: 'Fatima Nassir',  country: 'University in Australia 🇦🇺', quote: '"The pre-departure briefing was incredible. I landed knowing exactly what to do."',              rating: 5 },
 ]
@@ -116,8 +116,8 @@ export function Testimonials({ testimonials, locale }: { testimonials: Testimoni
             <div key={t._id} className="bg-white rounded-2xl p-6 border-t-4 border-yellow-300 border border-teal-100">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center overflow-hidden shrink-0">
-                  {(t as Testimonial).photo ? (
-                    <Image src={urlFor((t as Testimonial).photo!).width(96).height(96).url()} alt={t.name} width={48} height={48} className="object-cover w-full h-full" />
+                  {(t as Testimonial).photo?.asset?._ref ? (
+                    <Image src={urlFor((t as Testimonial).photo!).width(96).height(96).url()} alt={t.name} width={48} height={48} unoptimized className="object-cover w-full h-full" />
                   ) : (
                     <span className="text-teal-600 font-bold text-lg">{t.name[0]}</span>
                   )}
@@ -151,9 +151,6 @@ export function FeaturedEventSection({ event, locale }: { event: FeaturedEvent |
     <section className="py-12 md:py-16 px-4 sm:px-6 bg-teal-700 relative overflow-hidden">
       <div className="absolute right-0 top-0 w-64 h-64 bg-teal-600 rounded-full translate-x-1/2 -translate-y-1/2 opacity-50" />
       <div className="max-w-7xl mx-auto relative">
-        <div className="bg-yellow-300 text-teal-700 text-xs font-bold px-4 py-1.5 rounded-lg inline-block mb-6 max-w-full break-words">
-          ✏️ Admin: Update from /studio → Featured Event
-        </div>
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-10 items-center">
           <div>
             <p className="text-yellow-300 text-xs font-bold uppercase tracking-widest mb-3">
@@ -178,8 +175,8 @@ export function FeaturedEventSection({ event, locale }: { event: FeaturedEvent |
           </div>
           <div className="relative">
             <div className="bg-teal-600 rounded-2xl aspect-video flex items-center justify-center overflow-hidden">
-              {event.image ? (
-                <Image src={urlFor(event.image).width(800).height(450).url()} alt={event.image.alt || title} width={800} height={450} className="object-cover w-full h-full rounded-2xl" />
+              {event.image?.asset?._ref ? (
+                <Image src={urlFor(event.image).width(800).height(450).url()} alt={event.image.alt || title} width={800} height={450} unoptimized className="object-cover w-full h-full rounded-2xl" />
               ) : (
                 <div className="text-center">
                   <div className="text-5xl mb-2">📸</div>

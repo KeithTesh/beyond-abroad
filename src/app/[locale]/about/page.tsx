@@ -1,8 +1,10 @@
 // FILE: src/app/[locale]/about/page.tsx
 // ROUTE: /about
-// PURPOSE: About page — Caroline bio, certifications, why choose us,
+// PURPOSE: About page — Calorine bio, certifications, why choose us,
 //          partner logos, dual office locations (Nairobi + Kampala)
 // STYLING: Tailwind v4 inline classes only
+
+export const dynamic = 'force-dynamic'
 
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -17,8 +19,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: locale === 'sw' ? 'Kuhusu Sisi' : 'About Us',
     description: locale === 'sw'
-      ? 'Jifunze kuhusu Caroline Kangai na dhamira ya Beyond Abroad.'
-      : "Learn about Caroline Kangai and Beyond Abroad's mission to make international education accessible.",
+      ? 'Jifunze kuhusu Calorine Kangai na dhamira ya Beyond Abroad.'
+      : "Learn about Calorine Kangai and Beyond Abroad's mission to make international education accessible.",
   }
 }
 
@@ -76,15 +78,15 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               <div className="bg-teal-100 rounded-2xl aspect-[3/4] flex items-center justify-center">
                 <div className="text-center">
                   <div className="text-5xl mb-3">📸</div>
-                  <p className="text-teal-500 text-sm font-medium">Caroline's photo here</p>
+                  <p className="text-teal-500 text-sm font-medium">Calorine's photo here</p>
                 </div>
               </div>
             </div>
             <div className="lg:col-span-3">
               <p className="text-teal-500 text-xs font-bold uppercase tracking-widest mb-2">
-                {isSw ? 'Kutana na Caroline' : 'Meet Caroline'}
+                {isSw ? 'Kutana na Calorine' : 'Meet Calorine'}
               </p>
-              <h2 className="text-teal-700 text-3xl font-extrabold mb-1">Caroline Kangai</h2>
+              <h2 className="text-teal-700 text-3xl font-extrabold mb-1">Calorine Kangai</h2>
               <div className="yellow-bar mb-3" />
               <p className="text-teal-500 font-semibold text-base mb-1">
                 {isSw ? 'Mwanzilishi na Mshauri Mkuu wa Wanafunzi' : 'Founder & Lead Student Counselor'}
@@ -94,8 +96,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               </p>
               <p className="text-gray-600 leading-relaxed mb-4">
                 {isSw
-                  ? 'Caroline amekuwa akiongoza wanafunzi wa Afrika Mashariki kwa zaidi ya miaka 8 kwenda vyuo vikuu nchini Canada, Uingereza, Australia, Ujerumani na zaidi. Amewasilisha wanafunzi zaidi ya 500 kwenye vyuo vikuu vya juu duniani.'
-                  : 'Caroline has spent over 8 years guiding East African students to universities in Canada, UK, Australia, Germany and beyond. She has personally placed over 500 students in top universities globally.'}
+                  ? 'Calorine amekuwa akiongoza wanafunzi wa Afrika Mashariki kwa zaidi ya miaka 8 kwenda vyuo vikuu nchini Canada, Uingereza, Australia, Ujerumani na zaidi. Amewasilisha wanafunzi zaidi ya 500 kwenye vyuo vikuu vya juu duniani.'
+                  : 'Calorine has spent over 8 years guiding East African students to universities in Canada, UK, Australia, Germany and beyond. She has personally placed over 500 students in top universities globally.'}
               </p>
               <p className="text-gray-600 leading-relaxed">
                 {isSw

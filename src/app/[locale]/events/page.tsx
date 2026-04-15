@@ -4,6 +4,8 @@
 //          grid of upcoming events with photos, short text, status badges
 // STYLING: Tailwind v4 inline classes only
 
+export const dynamic = 'force-dynamic'
+
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,7 +13,7 @@ import Navbar        from '@/components/layout/Navbar'
 import Footer        from '@/components/layout/Footer'
 import EventBanner   from '@/components/layout/EventBanner'
 import WhatsAppFloatServer from '@/components/ui/WhatsAppFloatServer'
-import { client, FEATURED_EVENT_QUERY, EVENTS_QUERY, urlFor } from '@/sanity/client'
+import { client, FEATURED_EVENT_QUERY, FEATURED_REGULAR_EVENT_QUERY, EVENTS_QUERY, urlFor } from '@/sanity/client'
 import type { FeaturedEvent, Event } from '@/types'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -44,10 +46,24 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
   const { locale } = await params
   const isSw = locale === 'sw'
 
-  const [featuredEvent, events]: [FeaturedEvent, Event[]] = await Promise.all([
+  const [fe, regularFe, events]: [FeaturedEvent, Event & { photo?: FeaturedEvent['image'] }, Event[]] = await Promise.all([
     client.fetch(FEATURED_EVENT_QUERY),
+    client.fetch(FEATURED_REGULAR_EVENT_QUERY),
     client.fetch(EVENTS_QUERY),
   ])
+
+  const featuredEvent: FeaturedEvent | null = fe ?? (regularFe ? {
+    titleEn:        regularFe.titleEn,
+    titleSw:        regularFe.titleSw,
+    subtitleEn:     regularFe.shortText,
+    deadline:       regularFe.deadline,
+    requirementsEn: regularFe.requirements,
+    image:          regularFe.photo ?? ({ asset: { _ref: '' } } as FeaturedEvent['image']),
+    ctaLabelEn:     'Apply Now',
+    ctaLabelSw:     'Omba Sasa',
+    ctaLink:        regularFe.registrationLink ?? '',
+    learnMoreLink:  regularFe.learnMoreLink,
+  } : null)
 
   const evTitle = (e: Event) => isSw && e.titleSw ? e.titleSw : e.titleEn
 
@@ -74,13 +90,10 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
         {featuredEvent && (
           <section className="py-8 md:py-12 px-4 sm:px-6 bg-teal-700">
             <div className="max-w-7xl mx-auto">
-              <div className="bg-yellow-300 text-teal-700 text-xs font-bold px-4 py-1.5 rounded-lg inline-block mb-6 max-w-full break-words">
-                ✏️ Admin: Edit from /studio → Featured Event (Homepage Banner)
-              </div>
               <div className="bg-teal-800 rounded-2xl overflow-hidden grid lg:grid-cols-2">
-                <div className="relative aspect-video lg:aspect-auto bg-teal-600">
-                  {featuredEvent.image ? (
-                    <Image src={urlFor(featuredEvent.image).width(800).height(500).url()} alt={featuredEvent.image.alt || ''} fill className="object-cover" />
+                <div className="relative aspect-video lg:aspect-auto bg-teal-600 overflow-hidden">
+                  {featuredEvent.image?.asset?._ref ? (
+                    <Image src={urlFor(featuredEvent.image).width(800).height(500).url()} alt={featuredEvent.image.alt || ''} width={800} height={500} unoptimized className="object-cover w-full h-full" />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <p className="text-white/40 text-sm">📸 Event image — add in Sanity</p>
@@ -134,9 +147,9 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
                   {/* Coloured top bar */}
                   <div style={{ height: 6, background: topColor[ev.status] || '#0E5C5C' }} />
                   {/* Event photo */}
-                  {ev.photo && (
-                    <div className="relative aspect-video bg-teal-100">
-                      <Image src={urlFor(ev.photo).width(600).height(340).url()} alt={ev.photo.alt || evTitle(ev)} fill className="object-cover" />
+                  {ev.photo?.asset?._ref && (
+                    <div className="aspect-video bg-teal-100 overflow-hidden">
+                      <Image src={urlFor(ev.photo).width(600).height(340).url()} alt={ev.photo.alt || evTitle(ev)} width={600} height={340} unoptimized className="object-cover w-full h-full" />
                     </div>
                   )}
                   <div className="p-5 flex flex-col flex-1">

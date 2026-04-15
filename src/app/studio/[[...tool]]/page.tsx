@@ -1,7 +1,7 @@
 // FILE: src/app/studio/[[...tool]]/page.tsx
-// ROUTE: /studio  (Caroline's admin panel)
+// ROUTE: /studio  (Calorine's admin panel)
 // PURPOSE: Embeds Sanity Studio in the Next.js app
-//          Caroline logs in here to manage all site content
+//          Calorine logs in here to manage all site content
 // NOTE: Excluded from locale middleware (see middleware.ts) and blocked by robots.ts
 
 'use client'

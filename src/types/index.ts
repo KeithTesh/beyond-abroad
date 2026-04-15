@@ -5,7 +5,7 @@
 export type Locale = 'en' | 'sw'
 
 export interface SanityImage {
-  asset: { _ref: string; url: string }
+  asset: { _ref: string }
   alt?: string
   caption?: string
 }

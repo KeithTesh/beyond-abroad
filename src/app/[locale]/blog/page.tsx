@@ -4,6 +4,8 @@
 //          newsletter strip between rows, supports cover image or video thumbnail
 // STYLING: Tailwind v4 inline classes only
 
+export const dynamic = 'force-dynamic'
+
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'

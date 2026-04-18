@@ -16,8 +16,8 @@ import EventBanner   from '@/components/layout/EventBanner'
 import WhatsAppFloatServer from '@/components/ui/WhatsAppFloatServer'
 import { localePath } from '@/i18n/routing'
 import { NewsletterStrip } from '@/components/ui/index'
-import { client, BLOG_POST_QUERY, RELATED_POSTS_QUERY, urlFor } from '@/sanity/client'
-import type { BlogPost } from '@/types'
+import { client, BLOG_POST_QUERY, RELATED_POSTS_QUERY, SIDEBAR_EVENTS_QUERY, SIDEBAR_RECENT_POSTS_QUERY, urlFor } from '@/sanity/client'
+import type { BlogPost, Event } from '@/types'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { slug, locale } = await params
@@ -98,51 +98,125 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
   const post: BlogPost = await client.fetch(BLOG_POST_QUERY, { slug })
   if (!post) notFound()
 
-  const related: BlogPost[] = await client.fetch(RELATED_POSTS_QUERY, { slug, category: post.category })
+  const [related, sidebarEvents, recentPosts] = await Promise.all([
+    client.fetch(RELATED_POSTS_QUERY, { slug, category: post.category }) as Promise<BlogPost[]>,
+    client.fetch(SIDEBAR_EVENTS_QUERY) as Promise<Event[]>,
+    client.fetch(SIDEBAR_RECENT_POSTS_QUERY, { slug }) as Promise<BlogPost[]>,
+  ])
+
   const title   = isSw && post.titleSw ? post.titleSw : post.titleEn
   const body    = isSw && post.bodySw?.length ? post.bodySw : post.bodyEn
-  const embedUrl = post.coverVideo ? getEmbedUrl(post.coverVideo) : null
 
   return (
     <>
       <EventBanner locale={locale} />
       <Navbar />
       <main>
-        {/* Cover */}
-        <div className="w-full bg-teal-900">
-          {post.coverVideo && embedUrl
-            ? <div className="relative aspect-video max-h-[520px] overflow-hidden"><iframe src={embedUrl} className="absolute inset-0 w-full h-full" allowFullScreen /></div>
-            : post.coverImage
-              ? <div className="relative aspect-video max-h-[520px] overflow-hidden"><Image src={urlFor(post.coverImage).width(1440).height(810).url()} alt={post.coverImage.alt || title} fill className="object-cover" priority /></div>
-              : <div className="aspect-video max-h-[300px] flex items-center justify-center bg-teal-700"><span className="text-6xl">📝</span></div>
-          }
-        </div>
+        {/* Article + Sidebar */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] gap-10 xl:gap-14 items-start">
 
-        {/* Article */}
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
-          <Link href={localePath('/blog', locale)} className="text-teal-500 text-sm font-semibold hover:underline mb-6 inline-block">
-            ← {isSw ? 'Rudi kwa Blogu' : 'Back to Blog'}
-          </Link>
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            {post.category && <span className="bg-teal-100 text-teal-700 text-xs font-bold px-3 py-1 rounded-full capitalize">{post.category.replace('-',' ')}</span>}
-            <span className="text-gray-400 text-sm">{formatDate(post.publishedAt)}</span>
-            {post.readTime && <span className="text-gray-400 text-sm">· {post.readTime} {isSw ? 'dak za kusoma' : 'min read'}</span>}
-          </div>
-          <h1 className="text-teal-700 text-3xl md:text-4xl font-extrabold leading-tight mb-6">{title}</h1>
-          <div className="flex items-center gap-3 mb-8 pb-8 border-b border-teal-100">
-            <div className="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0">CK</div>
+            {/* Main article column */}
             <div>
-              <p className="text-teal-700 font-semibold text-sm">{post.author}</p>
-              <p className="text-gray-400 text-xs">{isSw ? 'Mwanzilishi, Beyond Abroad' : 'Founder, Beyond Abroad'}</p>
+              <Link href={localePath('/blog', locale)} className="text-teal-500 text-sm font-semibold hover:underline mb-6 inline-block">
+                ← {isSw ? 'Rudi kwa Blogu' : 'Back to Blog'}
+              </Link>
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                {post.category && <span className="bg-teal-100 text-teal-700 text-xs font-bold px-3 py-1 rounded-full capitalize">{post.category.replace('-',' ')}</span>}
+                <span className="text-gray-400 text-sm">{formatDate(post.publishedAt)}</span>
+                {post.readTime && <span className="text-gray-400 text-sm">· {post.readTime} {isSw ? 'dak za kusoma' : 'min read'}</span>}
+              </div>
+              <h1 className="text-teal-700 text-3xl md:text-4xl font-extrabold leading-tight mb-6">{title}</h1>
+              <div className="flex items-center gap-3 mb-8 pb-8 border-b border-teal-100">
+                <div className="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0">CK</div>
+                <div>
+                  <p className="text-teal-700 font-semibold text-sm">{post.author}</p>
+                  <p className="text-gray-400 text-xs">{isSw ? 'Mwanzilishi, Beyond Abroad' : 'Founder, Beyond Abroad'}</p>
+                </div>
+              </div>
+              <article>{renderBody(body || [])}</article>
+              {post.category && (
+                <div className="mt-10 pt-6 border-t border-teal-100">
+                  <span className="text-gray-400 text-xs mr-2">Filed under:</span>
+                  <span className="bg-teal-50 text-teal-600 text-xs font-semibold px-3 py-1 rounded-full capitalize">{post.category.replace('-',' ')}</span>
+                </div>
+              )}
             </div>
+
+            {/* Sidebar — hidden on mobile/tablet */}
+            <aside className="hidden lg:block space-y-5 sticky top-24">
+
+              {/* Upcoming Events */}
+              {sidebarEvents.length > 0 && (
+                <div className="border border-teal-100 rounded-2xl overflow-hidden">
+                  <div className="bg-teal-700 px-4 py-3">
+                    <h3 className="text-white font-bold text-xs uppercase tracking-wider">{isSw ? 'Matukio Yanayokuja' : 'Upcoming Events'}</h3>
+                  </div>
+                  <div className="divide-y divide-teal-50">
+                    {sidebarEvents.map(ev => (
+                      <div key={ev._id} className="p-4">
+                        <p className="text-teal-700 font-semibold text-sm leading-snug mb-1">{isSw && ev.titleSw ? ev.titleSw : ev.titleEn}</p>
+                        {ev.deadline && <p className="text-xs text-gray-400 mb-2">{isSw ? 'Mwisho:' : 'Deadline:'} {formatDate(ev.deadline)}</p>}
+                        {(ev.registrationLink || ev.learnMoreLink) && (
+                          <a href={(ev.registrationLink || ev.learnMoreLink)!} target="_blank" rel="noopener noreferrer"
+                            className="inline-block bg-yellow-300 text-teal-700 text-xs font-bold px-3 py-1 rounded-full hover:bg-yellow-400 transition-colors">
+                            {isSw ? 'Jiandikishe →' : 'Register →'}
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="px-4 py-3 bg-teal-50 border-t border-teal-100">
+                    <Link href={localePath('/events', locale)} className="text-teal-500 text-xs font-semibold hover:underline">
+                      {isSw ? 'Tazama matukio yote →' : 'View all events →'}
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* Recent Articles */}
+              {recentPosts.length > 0 && (
+                <div className="border border-teal-100 rounded-2xl overflow-hidden">
+                  <div className="bg-teal-700 px-4 py-3">
+                    <h3 className="text-white font-bold text-xs uppercase tracking-wider">{isSw ? 'Makala ya Hivi Karibuni' : 'Recent Articles'}</h3>
+                  </div>
+                  <div className="divide-y divide-teal-50">
+                    {recentPosts.map(rp => (
+                      <Link key={rp._id} href={localePath(`/blog/${rp.slug.current}`, locale)}
+                        className="block p-4 hover:bg-teal-50 transition-colors group">
+                        <p className="text-teal-700 font-semibold text-sm leading-snug mb-1 group-hover:text-teal-500 line-clamp-2">
+                          {isSw && rp.titleSw ? rp.titleSw : rp.titleEn}
+                        </p>
+                        <span className="text-gray-400 text-xs">{formatDate(rp.publishedAt)}</span>
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="px-4 py-3 bg-teal-50 border-t border-teal-100">
+                    <Link href={localePath('/blog', locale)} className="text-teal-500 text-xs font-semibold hover:underline">
+                      {isSw ? 'Tazama machapisho yote →' : 'View all posts →'}
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* Contact shortcut */}
+              <div className="border border-yellow-200 rounded-2xl overflow-hidden">
+                <div className="bg-yellow-300 px-4 py-3">
+                  <h3 className="text-teal-700 font-bold text-xs uppercase tracking-wider">{isSw ? 'Unahitaji Msaada?' : 'Need Help?'}</h3>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+                    {isSw ? 'Uko tayari kuanza safari yako ya masomo nje ya nchi? Washauri wetu wako hapa kukusaidia.' : 'Ready to start your study abroad journey? Our advisors are here to help.'}
+                  </p>
+                  <Link href={localePath('/contact', locale)}
+                    className="block text-center bg-teal-600 text-white text-sm font-bold px-4 py-2.5 rounded-xl hover:bg-teal-700 transition-colors">
+                    {isSw ? 'Wasiliana Nasi →' : 'Contact Us →'}
+                  </Link>
+                </div>
+              </div>
+
+            </aside>
           </div>
-          <article>{renderBody(body || [])}</article>
-          {post.category && (
-            <div className="mt-10 pt-6 border-t border-teal-100">
-              <span className="text-gray-400 text-xs mr-2">Filed under:</span>
-              <span className="bg-teal-50 text-teal-600 text-xs font-semibold px-3 py-1 rounded-full capitalize">{post.category.replace('-',' ')}</span>
-            </div>
-          )}
         </div>
 
         <NewsletterStrip variant="dark" />

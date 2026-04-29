@@ -83,6 +83,7 @@ const partners = [
   { name: 'University of\nMaryland',           abbr: 'UMD', bg: 'bg-red-800'    },
   { name: 'Vancouver Island\nUniversity',      abbr: 'VIU', bg: 'bg-teal-700'   },
   { name: 'Lakehead\nUniversity',              abbr: 'LU',  bg: 'bg-blue-800'   },
+  { name: 'Multiworld\nInternational',         abbr: 'MI',  bg: 'bg-orange-700' },
 ]
 
 export function PartnersSection({ locale }: { locale: string }) {
@@ -102,7 +103,7 @@ export function PartnersSection({ locale }: { locale: string }) {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
           {partners.map((p) => (
             <div key={p.abbr}
               className="bg-gray-50 border border-gray-100 rounded-2xl p-5 flex flex-col items-center justify-center gap-3 hover:border-teal-200 hover:shadow-sm transition-all">

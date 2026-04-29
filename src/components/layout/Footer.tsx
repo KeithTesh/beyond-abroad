@@ -55,9 +55,9 @@ export default async function Footer() {
 
           {/* Brand + contact */}
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Image src="/logo.png" alt="Beyond Abroad" width={48} height={48} className="w-12 h-12 object-contain" />
-              <span className="text-yellow-300 font-extrabold text-lg">Beyond Abroad</span>
+            <div className="flex items-center gap-4 mb-3">
+              <Image src="/logo.png" alt="Beyond Abroad" width={120} height={120} className="w-28 h-28 object-contain" />
+              <span className="text-yellow-300 font-extrabold text-2xl">Beyond Abroad</span>
             </div>
             <p className="text-white/60 text-sm leading-relaxed mb-4">{t('tagline')}</p>
             <div className="space-y-1.5 text-sm text-white/65">

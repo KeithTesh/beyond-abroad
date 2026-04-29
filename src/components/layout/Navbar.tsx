@@ -56,7 +56,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href={localize('/')} className="flex items-center gap-2 shrink-0">
-          <Image src="/logo.png" alt="Beyond Abroad" width={48} height={48} className="w-12 h-12 object-contain" />
+          <Image src="/logo.png" alt="Beyond Abroad" width={64} height={64} className="w-16 h-16 object-contain" />
           <span className="text-yellow-300 font-extrabold text-lg tracking-tight">
             Beyond Abroad
           </span>

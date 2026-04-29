@@ -34,9 +34,13 @@ const certifications = [
 ]
 
 const partners = [
-  'Multiworld International', 'British Council',
-  'Uniserve Education',       'Sable Education',
-  'S3 Education',             'University of Manchester',
+  { name: 'Metropolitan\nCommunity College',  abbr: 'MCC', bg: 'bg-indigo-700'  },
+  { name: 'Staffordshire\nUniversity',         abbr: 'SU',  bg: 'bg-red-700'    },
+  { name: 'Southeast\nCommunity College',      abbr: 'SCC', bg: 'bg-emerald-700'},
+  { name: 'University of\nMaryland',           abbr: 'UMD', bg: 'bg-red-800'    },
+  { name: 'Vancouver Island\nUniversity',      abbr: 'VIU', bg: 'bg-teal-700'   },
+  { name: 'Lakehead\nUniversity',              abbr: 'LU',  bg: 'bg-blue-800'   },
+  { name: 'Multiworld\nInternational',         abbr: 'MI',  bg: 'bg-orange-700' },
 ]
 
 const whyUs = [
@@ -151,11 +155,14 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               {isSw ? 'Washirika Wetu' : 'Our Partners'}
             </h2>
             <div className="yellow-bar mb-6" />
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
               {partners.map((p) => (
-                <div key={p} className="border border-teal-100 rounded-xl px-5 py-3 flex items-center gap-3 hover:border-teal-300 transition-colors">
-                  <div className="w-1 h-8 bg-teal-500 rounded-full shrink-0" />
-                  <span className="text-teal-600 font-semibold text-sm">{p}</span>
+                <div key={p.abbr}
+                  className="bg-gray-50 border border-gray-100 rounded-2xl p-5 flex flex-col items-center justify-center gap-3 hover:border-teal-200 hover:shadow-sm transition-all">
+                  <div className={`w-12 h-12 rounded-xl ${p.bg} flex items-center justify-center shrink-0`}>
+                    <span className="text-white text-xs font-extrabold tracking-tight">{p.abbr}</span>
+                  </div>
+                  <p className="text-gray-600 text-xs font-semibold text-center leading-snug whitespace-pre-line">{p.name}</p>
                 </div>
               ))}
             </div>

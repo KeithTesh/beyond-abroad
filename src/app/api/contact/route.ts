@@ -21,38 +21,46 @@ export async function POST(req: NextRequest) {
     const data = schema.parse(await req.json())
     const resend = getResend()
 
-    // 1. Notify Calorine
+    // 1. Notify site owner (branded HTML + plain-text fallback)
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://beyondabroadco.com'
     await resend.emails.send({
-      from: FROM_EMAIL, to: CONTACT_TO,
+      from: FROM_EMAIL,
+      to: CONTACT_TO,
       subject: `New enquiry from ${data.name} — ${data.service || 'General'}`,
+      text: `New enquiry from ${data.name}\n\nPhone: ${data.phone}\nEmail: ${data.email}\nService: ${data.service || '—'}\nDestination: ${data.destination || '—'}\n\nMessage:\n${data.message}\n\nReply via WhatsApp: https://wa.me/${data.phone.replace(/\D/g,'')}\nView site: ${siteUrl}`,
       html: `
-        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
-          <div style="background:#073D3D;padding:24px;border-radius:8px 8px 0 0;">
-            <h1 style="color:#F5C72E;margin:0;font-size:22px;">New Enquiry — Beyond Abroad</h1>
+        <div style="font-family:Inter, Arial, sans-serif;max-width:680px;margin:0 auto;color:#333;background:#f7faf9;">
+          <div style="background:#073D3D;padding:24px;border-radius:8px 8px 0 0;text-align:center;">
+            <h2 style="color:#F5C72E;margin:0;font-size:20px;">New Enquiry — Beyond Abroad</h2>
+            <p style="color:rgba(255,255,255,0.85);margin:6px 0 0;font-size:12px;">from ${data.name} — ${data.service || 'General'}</p>
           </div>
-          <div style="background:#fff;padding:24px;border:1px solid #C5E8E0;border-top:none;border-radius:0 0 8px 8px;font-size:14px;">
-            <table style="width:100%;border-collapse:collapse;">
-              <tr><td style="padding:8px 0;color:#555;width:140px;">Name</td>        <td style="padding:8px 0;font-weight:bold;color:#073D3D;">${data.name}</td></tr>
-              <tr><td style="padding:8px 0;color:#555;">Phone/WhatsApp</td>           <td style="padding:8px 0;font-weight:bold;color:#073D3D;">${data.phone}</td></tr>
-              <tr><td style="padding:8px 0;color:#555;">Email</td>                   <td style="padding:8px 0;font-weight:bold;color:#073D3D;">${data.email}</td></tr>
-              <tr><td style="padding:8px 0;color:#555;">Service</td>                 <td style="padding:8px 0;color:#073D3D;">${data.service || '—'}</td></tr>
-              <tr><td style="padding:8px 0;color:#555;">Destination</td>             <td style="padding:8px 0;color:#073D3D;">${data.destination || '—'}</td></tr>
-              <tr><td style="padding:8px 0;color:#555;vertical-align:top;">Message</td><td style="padding:8px 0;color:#073D3D;">${data.message}</td></tr>
+          <div style="background:#fff;padding:20px;border:1px solid #E6F3F0;border-top:none;border-radius:0 0 8px 8px;font-size:14px;">
+            <table style="width:100%;border-collapse:collapse;margin-bottom:12px;">
+              <tr><td style="padding:6px 0;color:#555;width:150px;">Name</td><td style="padding:6px 0;font-weight:600;color:#073D3D;">${data.name}</td></tr>
+              <tr><td style="padding:6px 0;color:#555;">Phone</td><td style="padding:6px 0;font-weight:600;color:#073D3D;">${data.phone}</td></tr>
+              <tr><td style="padding:6px 0;color:#555;">Email</td><td style="padding:6px 0;font-weight:600;color:#073D3D;">${data.email}</td></tr>
+              <tr><td style="padding:6px 0;color:#555;">Service</td><td style="padding:6px 0;color:#073D3D;">${data.service || '—'}</td></tr>
+              <tr><td style="padding:6px 0;color:#555;">Destination</td><td style="padding:6px 0;color:#073D3D;">${data.destination || '—'}</td></tr>
             </table>
-            <div style="margin-top:20px;">
-              <a href="https://wa.me/${data.phone.replace(/\D/g,'')}?text=Hi ${encodeURIComponent(data.name)}, thanks for reaching out to Beyond Abroad!"
-                 style="background:#25D366;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:bold;">
-                Reply on WhatsApp
-              </a>
+            <div style="background:#f3f9f8;border:1px solid #E6F3F0;padding:12px;border-radius:8px;white-space:pre-wrap;color:#555;margin-bottom:14px;">${data.message}</div>
+            <div style="text-align:left;display:flex;gap:8px;flex-wrap:wrap;">
+              <a href="mailto:${data.email}?subject=Re:%20Your%20Beyond%20Abroad%20inquiry" style="background:#073D3D;color:#fff;padding:10px 14px;border-radius:8px;text-decoration:none;font-weight:600;">Reply by email</a>
+              <a href="https://wa.me/${data.phone.replace(/\D/g,'')}?text=Hi%20${encodeURIComponent(data.name)}%2C%20thanks%20for%20reaching%20out%20to%20Beyond%20Abroad" style="background:#25D366;color:#fff;padding:10px 14px;border-radius:8px;text-decoration:none;font-weight:600;">Reply on WhatsApp</a>
+              <a href="${siteUrl}" style="background:#F5C72E;color:#073D3D;padding:10px 14px;border-radius:8px;text-decoration:none;font-weight:600;">Open site</a>
             </div>
           </div>
-        </div>`,
+          <div style="max-width:680px;margin:12px auto 0;text-align:center;font-size:12px;color:#9aa7a5;">
+            <p style="margin:0;">&copy; ${new Date().getFullYear()} Beyond Abroad — ${siteUrl.replace(/^https?:\/\//, '')}</p>
+          </div>
+        </div>
+      `,
     })
 
-    // 2. Auto-reply to visitor
+    // 2. Auto-reply to visitor (branded HTML + plain-text fallback)
     await resend.emails.send({
       from: FROM_EMAIL, to: data.email,
       subject: 'We received your message — Beyond Abroad',
+      text: `Hi ${data.name},\n\nThanks for reaching out. We received your message and a member of the Beyond Abroad team will respond within 24 hours.\n\nService: ${data.service || '—'}\nDestination: ${data.destination || '—'}\nMessage: ${data.message}\n\nContact: hello@beyondabroad.com\n`,
       html: `
         <div style="font-family:Inter, Arial, sans-serif;max-width:680px;margin:0 auto;color:#333;background:#f7faf9;">
           <div style="background:#073D3D;padding:28px;border-radius:8px 8px 0 0;text-align:center;">
@@ -79,7 +87,7 @@ export async function POST(req: NextRequest) {
           </div>
 
           <div style="max-width:680px;margin:14px auto 0;text-align:center;font-size:12px;color:#9aa7a5;">
-            <p style="margin:0;">&copy; ${new Date().getFullYear()} Beyond Abroad — beyondabroadco.com</p>
+            <p style="margin:0;">&copy; ${new Date().getFullYear()} Beyond Abroad — ${siteUrl.replace(/^https?:\/\//, '')}</p>
           </div>
         </div>
       `,

@@ -8,12 +8,12 @@ import { z } from 'zod'
 import { getResend, FROM_EMAIL, CONTACT_TO } from '@/lib/resend'
 
 const schema = z.object({
-  name:        z.string().min(2),
-  phone:       z.string().min(7),
-  email:       z.string().email(),
-  service:     z.string().optional(),
-  destination: z.string().optional(),
-  message:     z.string().min(10),
+  name:        z.string().trim().min(2),
+  phone:       z.string().trim().min(7),
+  email:       z.string().trim().email(),
+  service:     z.string().trim().optional(),
+  destination: z.string().trim().optional(),
+  message:     z.string().trim().min(10),
 })
 
 function errorResponse(stage: string, err: unknown) {
@@ -30,6 +30,13 @@ export async function POST(req: NextRequest) {
     } catch {
       return NextResponse.json(
         { error: 'Invalid JSON', message: 'Request body must be valid JSON.' },
+        { status: 400 },
+      )
+    }
+
+    if (!requestBody || typeof requestBody !== 'object' || Array.isArray(requestBody)) {
+      return NextResponse.json(
+        { error: 'Invalid request', message: 'Request body must be a JSON object.' },
         { status: 400 },
       )
     }

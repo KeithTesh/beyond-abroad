@@ -23,10 +23,40 @@ export default function ContactForm({ locale }: { locale: string }) {
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) =>
     setForm(prev => ({ ...prev, [field]: e.target.value }))
 
+  const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+
+  const validateForm = () => {
+    if (form.name.trim().length < 2) {
+      return isSw ? 'Jina lazima liwe angalau herufi 2.' : 'Name must be at least 2 characters.'
+    }
+
+    if (form.phone.trim().length < 7) {
+      return isSw ? 'Tafadhali ingiza nambari ya simu ya kweli.' : 'Please enter a valid phone number.'
+    }
+
+    if (!isValidEmail(form.email.trim())) {
+      return isSw ? 'Tafadhali ingiza barua pepe halali.' : 'Please enter a valid email address.'
+    }
+
+    if (form.message.trim().length < 10) {
+      return isSw ? 'Ujumbe lazima uwe angalau herufi 10.' : 'Message must be at least 10 characters.'
+    }
+
+    return null
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setStatus('loading')
     setErrorMessage(null)
+    const validationError = validateForm()
+
+    if (validationError) {
+      setErrorMessage(validationError)
+      setStatus('error')
+      return
+    }
+
+    setStatus('loading')
 
     try {
       const res = await fetch('/api/contact', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(form) })

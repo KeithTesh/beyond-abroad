@@ -11,6 +11,14 @@ export const metadata: Metadata = {
     template: '%s | Beyond Abroad',
   },
   description: 'British Council certified student counselor helping East African students achieve their international education dreams.',
+  icons: {
+    icon: [
+      { url: '/logo.png', type: 'image/png' },
+      { url: '/file.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
 }
 
 export default async function RootLayout({

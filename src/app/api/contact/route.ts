@@ -24,7 +24,17 @@ function errorResponse(stage: string, err: unknown) {
 
 export async function POST(req: NextRequest) {
   try {
-    const data = schema.parse(await req.json())
+    let requestBody: unknown
+    try {
+      requestBody = await req.json()
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid JSON', message: 'Request body must be valid JSON.' },
+        { status: 400 },
+      )
+    }
+
+    const data = schema.parse(requestBody)
     const resend = getResend()
 
     // 1. Notify site owner (branded HTML + plain-text fallback)

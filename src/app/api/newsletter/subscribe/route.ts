@@ -16,7 +16,17 @@ function subscribeErrorResponse(stage: string, err: unknown) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { email } = schema.parse(await req.json())
+    let requestBody: unknown
+    try {
+      requestBody = await req.json()
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid JSON', message: 'Request body must be valid JSON.' },
+        { status: 400 },
+      )
+    }
+
+    const { email } = schema.parse(requestBody)
     const resend = getResend()
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://beyondabroadco.com'
 

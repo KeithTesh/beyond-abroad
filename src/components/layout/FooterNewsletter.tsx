@@ -15,8 +15,12 @@ export default function FooterNewsletter({
 }) {
   const [email,  setEmail]  = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [apiError, setApiError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus('loading')
+    setApiError(null)
     e.preventDefault()
     setStatus('loading')
     try {
@@ -30,9 +34,11 @@ export default function FooterNewsletter({
       }
       const body = await res.json().catch(() => null)
       console.error('Newsletter subscribe error', body)
+      setApiError(body?.message || errorMsg)
       setStatus('error')
     } catch (err) {
       console.error('Newsletter subscribe fetch failed', err)
+      setApiError(err instanceof Error ? err.message : errorMsg)
       setStatus('error')
     }
   }
@@ -56,7 +62,11 @@ export default function FooterNewsletter({
           >
             {status === 'loading' ? '...' : subscribeLabel}
           </button>
-          {status === 'error' && <p className="text-red-300 text-xs">{errorMsg}</p>}
+          {status === 'error' && (
+            <p className="text-red-300 text-xs">
+              {apiError ?? errorMsg}
+            </p>
+          )}
           <p className="text-white/35 text-xs">{disclaimer}</p>
         </form>
       )}

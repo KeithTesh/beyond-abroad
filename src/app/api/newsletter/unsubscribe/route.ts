@@ -8,7 +8,17 @@ import { getResend, AUDIENCE_ID } from '@/lib/resend'
 
 export async function POST(req: NextRequest) {
   try {
-    const { email } = await req.json()
+    let requestBody: unknown
+    try {
+      requestBody = await req.json()
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid JSON', message: 'Request body must be valid JSON.' },
+        { status: 400 },
+      )
+    }
+
+    const { email } = requestBody as { email?: string }
     if (!email) return NextResponse.json({ error: 'Email required' }, { status: 400 })
 
     const resend = getResend()

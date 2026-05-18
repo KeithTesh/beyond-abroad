@@ -17,6 +17,7 @@ const WhatsAppIcon = () => (
 export default function ContactForm({ locale }: { locale: string }) {
   const isSw = locale === 'sw'
   const [status, setStatus] = useState<'idle'|'loading'|'success'|'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [form, setForm] = useState({ name:'', phone:'', email:'', service:'', destination:'', message:'' })
 
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) =>
@@ -25,10 +26,22 @@ export default function ContactForm({ locale }: { locale: string }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStatus('loading')
+    setErrorMessage(null)
+
     try {
       const res = await fetch('/api/contact', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(form) })
-      setStatus(res.ok ? 'success' : 'error')
-    } catch { setStatus('error') }
+      if (res.ok) {
+        setStatus('success')
+        return
+      }
+
+      const body = await res.json().catch(() => null)
+      setErrorMessage(body?.message || (isSw ? 'Kuna hitilafu. Tafadhali jaribu tena.' : 'Something went wrong. Please try again.'))
+      setStatus('error')
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : (isSw ? 'Kuna hitilafu. Tafadhali jaribu tena.' : 'Something went wrong. Please try again.'))
+      setStatus('error')
+    }
   }
 
   const inp = 'w-full px-4 py-3 border-2 border-teal-100 rounded-xl text-sm bg-white outline-none focus:border-teal-500 transition-colors placeholder:text-gray-400'
@@ -130,7 +143,7 @@ export default function ContactForm({ locale }: { locale: string }) {
 
         {status === 'error' && (
           <p className="text-red-500 text-xs text-center">
-            {isSw ? 'Kuna hitilafu. Tafadhali jaribu WhatsApp au barua pepe moja kwa moja.' : 'Something went wrong. Please try WhatsApp or email directly.'}
+            {errorMessage ?? (isSw ? 'Kuna hitilafu. Tafadhali jaribu WhatsApp au barua pepe moja kwa moja.' : 'Something went wrong. Please try WhatsApp or email directly.')}
           </p>
         )}
       </div>

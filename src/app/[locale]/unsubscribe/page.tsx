@@ -1,75 +1,94 @@
-// FILE: src/app/[locale]/unsubscribe/page.tsx
-// ROUTE: /unsubscribe?email=...
-// PURPOSE: Newsletter unsubscribe confirmation — reads email from URL query param,
-//          calls /api/newsletter/unsubscribe automatically on load
-// STYLING: Tailwind v4 inline classes only
-
-'use client'
-
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import Link   from 'next/link'
-import { useLocale } from 'next-intl'
+import Link from 'next/link'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { localePath } from '@/i18n/routing'
 
-export default function UnsubscribePage() {
-  const locale = useLocale()
-  const searchParams = useSearchParams()
-  const email = searchParams.get('email') || ''
-  const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
+type Props = {
+  params: { locale: string }
+  searchParams: { email?: string | string[] }
+}
 
-  useEffect(() => {
-    if (!email) return
-    setStatus('loading')
-    fetch('/api/newsletter/unsubscribe', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
-    })
-      .then(r => setStatus(r.ok ? 'done' : 'error'))
-      .catch(() => setStatus('error'))
-  }, [email])
+export default async function UnsubscribePage({ params, searchParams }: Props) {
+  const locale = params.locale
+  const email = typeof searchParams.email === 'string' ? searchParams.email : ''
+  const isSw = locale === 'sw'
+
+  let status: 'idle' | 'done' | 'error' = 'idle'
+  let errorMessage: string | null = null
+
+  if (email) {
+    const host = process.env.NEXT_PUBLIC_SITE_URL || 'https://beyondabroadco.com'
+    try {
+      const res = await fetch(new URL('/api/newsletter/unsubscribe', host).toString(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+        cache: 'no-store',
+      })
+
+      const body = await res.json().catch(() => null)
+      if (res.ok) {
+        status = 'done'
+      } else {
+        status = 'error'
+        errorMessage = body?.message || 'Unable to unsubscribe at this time.'
+      }
+    } catch (err) {
+      status = 'error'
+      errorMessage = err instanceof Error ? err.message : 'Unable to unsubscribe at this time.'
+    }
+  }
 
   return (
     <>
       <Navbar />
       <main className="min-h-[60vh] flex items-center justify-center px-6 py-20">
         <div className="max-w-md w-full text-center">
-          {status === 'loading' && (
-            <p className="text-teal-600 text-lg font-medium">Processing your request...</p>
-          )}
           {status === 'done' && (
             <>
               <div className="text-5xl mb-4">👋</div>
-              <h1 className="text-teal-700 text-2xl font-extrabold mb-3">You have been unsubscribed</h1>
+              <h1 className="text-teal-700 text-2xl font-extrabold mb-3">
+                {isSw ? 'Umeondolewa kutoka kwenye orodha' : 'You have been unsubscribed'}
+              </h1>
               <p className="text-gray-500 text-sm mb-6">
-                <strong>{email}</strong> has been removed from the Beyond Abroad newsletter.
+                <strong>{email}</strong>{' '}
+                {isSw
+                  ? 'imeondolewa kutoka kwa jarida la Beyond Abroad.'
+                  : 'has been removed from the Beyond Abroad newsletter.'}
               </p>
               <Link href={localePath('/', locale)} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
-                Back to Home
+                {isSw ? 'Rudi nyumbani' : 'Back to Home'}
               </Link>
             </>
           )}
           {status === 'error' && (
             <>
               <div className="text-5xl mb-4">⚠️</div>
-              <h1 className="text-teal-700 text-2xl font-extrabold mb-3">Something went wrong</h1>
+              <h1 className="text-teal-700 text-2xl font-extrabold mb-3">
+                {isSw ? 'Kuna tatizo' : 'Something went wrong'}
+              </h1>
               <p className="text-gray-500 text-sm mb-6">
-                Please email us at <strong>carolmwenda09@gmail.com</strong> and we will remove you manually.
+                {errorMessage ||
+                  (isSw
+                    ? 'Tafadhali tuma barua pepe kwa carolmwenda09@gmail.com na tutakuondoa kwa mkono.'
+                    : 'Please email us at carolmwenda09@gmail.com and we will remove you manually.')}
               </p>
               <Link href={localePath('/', locale)} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
-                Back to Home
+                {isSw ? 'Rudi nyumbani' : 'Back to Home'}
               </Link>
             </>
           )}
           {status === 'idle' && !email && (
             <>
               <div className="text-5xl mb-4">❓</div>
-              <h1 className="text-teal-700 text-2xl font-extrabold mb-3">No email provided</h1>
-              <p className="text-gray-500 text-sm mb-6">Please use the unsubscribe link in your email.</p>
+              <h1 className="text-teal-700 text-2xl font-extrabold mb-3">
+                {isSw ? 'Barua pepe haikupatikana' : 'No email provided'}
+              </h1>
+              <p className="text-gray-500 text-sm mb-6">
+                {isSw ? 'Tafadhali tumia kiungo cha kuondoa usajili kwenye barua pepe yako.' : 'Please use the unsubscribe link in your email.'}
+              </p>
               <Link href={localePath('/', locale)} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
-                Back to Home
+                {isSw ? 'Rudi nyumbani' : 'Back to Home'}
               </Link>
             </>
           )}

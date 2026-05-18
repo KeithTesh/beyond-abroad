@@ -8,16 +8,24 @@ import { getResend, AUDIENCE_ID, FROM_EMAIL } from '@/lib/resend'
 
 const schema = z.object({ email: z.string().email() })
 
+function subscribeErrorResponse(stage: string, err: unknown) {
+  const message = err instanceof Error ? err.message : JSON.stringify(err)
+  console.error(`[newsletter:subscribe:${stage}]`, err)
+  return NextResponse.json({ error: stage, message }, { status: 500 })
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { email } = schema.parse(await req.json())
     const resend = getResend()
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://beyondabroadco.com'
 
     await resend.contacts.create({ email, audienceId: AUDIENCE_ID, unsubscribed: false })
 
     await resend.emails.send({
       from: FROM_EMAIL, to: email,
       subject: 'Welcome to the Beyond Abroad community!',
+      text: `Welcome to the Beyond Abroad newsletter!\n\nYou will now receive:\n- Latest study abroad intakes (Canada, UK, Australia, Germany and more)\n- Scholarship opportunities for East African students\n- Visa tips and step-by-step application guides\n- Student success stories\n\nYou subscribed at ${siteUrl}.\nTo unsubscribe, visit: ${siteUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
           <div style="background:#073D3D;padding:28px;border-radius:8px 8px 0 0;">
@@ -35,8 +43,8 @@ export async function POST(req: NextRequest) {
             </ul>
             <hr style="border:none;border-top:1px solid #C5E8E0;margin:20px 0;">
             <p style="color:#aaa;font-size:12px;">
-              You subscribed at beyondabroad.com.
-              <a href="${process.env.NEXT_PUBLIC_SITE_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#0E5C5C;">Unsubscribe</a>
+              You subscribed at ${siteUrl}.
+              <a href="${siteUrl}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#0E5C5C;">Unsubscribe</a>
             </p>
           </div>
         </div>`,
@@ -45,7 +53,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (err) {
     if (err instanceof z.ZodError) return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
-    console.error('Subscribe error:', err)
-    return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500 })
+    return subscribeErrorResponse('failed', err)
   }
 }

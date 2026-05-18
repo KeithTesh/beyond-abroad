@@ -132,8 +132,17 @@ export function NewsletterStrip({ variant = 'dark' }: { variant?: 'dark' | 'ligh
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       })
-      setStatus(res.ok ? 'success' : 'error')
-    } catch { setStatus('error') }
+      if (res.ok) {
+        setStatus('success')
+        return
+      }
+      const body = await res.json().catch(() => null)
+      console.error('Newsletter subscribe error', body)
+      setStatus('error')
+    } catch (err) {
+      console.error('Newsletter subscribe fetch failed', err)
+      setStatus('error')
+    }
   }
 
   return (

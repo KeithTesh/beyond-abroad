@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
     let detailsText = ''
     let heroImage: string | null = null
     let imageAlt: string | null = null
-    let pageUrl = contentUrl
+    let pageUrl = localePrefix
     let includeImage = false
 
     if (type === 'blog') {

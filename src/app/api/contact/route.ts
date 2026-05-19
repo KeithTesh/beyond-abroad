@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       await resend.emails.send({
         from: FROM_EMAIL, to: data.email,
         subject: 'We received your message — Beyond Abroad',
-        text: `Hi ${data.name},\n\nThanks for reaching out. We received your message and a member of the Beyond Abroad team will respond within 24 hours.\n\nService: ${data.service || '—'}\nDestination: ${data.destination || '—'}\nMessage: ${data.message}\n\nContact: hello@beyondabroad.com\n`,
+        text: `Hi ${data.name},\n\nThanks for reaching out. We received your message and a member of the Beyond Abroad team will respond within 24 hours.\n\nService: ${data.service || '—'}\nDestination: ${data.destination || '—'}\nMessage: ${data.message}\n\nContact: hello@beyondabroadco.com\n`,
         html: `
           <div style="font-family:Inter, Arial, sans-serif;max-width:680px;margin:0 auto;color:#333;background:#f7faf9;">
           <div style="background:#073D3D;padding:28px;border-radius:8px 8px 0 0;text-align:center;">
@@ -111,7 +111,7 @@ export async function POST(req: NextRequest) {
 
             <hr style="border:none;border-top:1px solid #EEF6F4;margin:20px 0;">
 
-            <p style="color:#777;font-size:13px;margin:0;">If you didn't expect this email, you can safely ignore it. Contact us at <a href="mailto:hello@beyondabroad.com" style="color:#073D3D;">hello@beyondabroad.com</a>.</p>
+            <p style="color:#777;font-size:13px;margin:0;">If you didn't expect this email, you can safely ignore it. Contact us at <a href="mailto:hello@beyondabroadco.com" style="color:#073D3D;">hello@beyondabroadco.com</a>.</p>
           </div>
 
           <div style="max-width:680px;margin:14px auto 0;text-align:center;font-size:12px;color:#9aa7a5;">

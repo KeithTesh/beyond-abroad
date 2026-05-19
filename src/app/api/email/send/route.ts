@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
 
             <hr style="border:none;border-top:1px solid #EEF6F4;margin:20px 0;">
 
-            <p style="color:#777;font-size:13px;margin:0;">If you didn't expect this email, you can safely ignore it. Reach us at <a href="mailto:hello@beyondabroad.com" style="color:#073D3D;">hello@beyondabroad.com</a>.</p>
+            <p style="color:#777;font-size:13px;margin:0;">If you didn't expect this email, you can safely ignore it. Reach us at <a href="mailto:hello@beyondabroadco.com" style="color:#073D3D;">hello@beyondabroadco.com</a>.</p>
           </div>
 
           <div style="max-width:680px;margin:14px auto 0;text-align:center;font-size:12px;color:#9aa7a5;">

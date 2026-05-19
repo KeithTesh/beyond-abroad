@@ -6,7 +6,7 @@ import { MetadataRoute } from 'next'
 import { client } from '@/sanity/client'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://beyondabroad.com'
+  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://beyondabroadco.com'
 
   const slugs = await client.fetch(
     `*[_type == "blogPost" && published == true]{ slug, publishedAt }`

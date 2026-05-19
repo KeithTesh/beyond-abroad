@@ -15,5 +15,5 @@ export function getResend() {
 }
 
 export const AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID || ''
-export const FROM_EMAIL  = process.env.RESEND_FROM_EMAIL  || 'hello@beyondabroad.com'
+export const FROM_EMAIL  = process.env.RESEND_FROM_EMAIL  || 'hello@beyondabroadco.com'
 export const CONTACT_TO  = process.env.CONTACT_TO_EMAIL   || 'carolmwenda09@gmail.com'

@@ -32,10 +32,12 @@ export async function POST(req: NextRequest) {
 
     await resend.contacts.create({ email, audienceId: AUDIENCE_ID, unsubscribed: false })
 
+    const unsubscribeUrl = `${siteUrl}/en/unsubscribe?email=${encodeURIComponent(email)}`
+
     await resend.emails.send({
       from: FROM_EMAIL, to: email,
       subject: 'Welcome to the Beyond Abroad community!',
-      text: `Welcome to the Beyond Abroad newsletter!\n\nYou will now receive:\n- Latest study abroad intakes (Canada, UK, Australia, Germany and more)\n- Scholarship opportunities for East African students\n- Visa tips and step-by-step application guides\n- Student success stories\n\nYou subscribed at ${siteUrl}.\nTo unsubscribe, visit: ${siteUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
+      text: `Welcome to the Beyond Abroad newsletter!\n\nYou will now receive:\n- Latest study abroad intakes (Canada, UK, Australia, Germany and more)\n- Scholarship opportunities for East African students\n- Visa tips and step-by-step application guides\n- Student success stories\n\nYou subscribed at ${siteUrl}.\nTo unsubscribe, visit: ${unsubscribeUrl}`,
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
           <div style="background:#073D3D;padding:28px;border-radius:8px 8px 0 0;">
@@ -54,7 +56,7 @@ export async function POST(req: NextRequest) {
             <hr style="border:none;border-top:1px solid #C5E8E0;margin:20px 0;">
             <p style="color:#aaa;font-size:12px;">
               You subscribed at ${siteUrl}.
-              <a href="${siteUrl}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#0E5C5C;">Unsubscribe</a>
+              <a href="${unsubscribeUrl}" style="color:#0E5C5C;">Unsubscribe</a>
             </p>
           </div>
         </div>`,

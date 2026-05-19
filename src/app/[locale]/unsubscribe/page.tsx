@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
-import { localePath } from '@/i18n/routing'
 
 type Props = {
   params: { locale: string }
@@ -9,9 +8,14 @@ type Props = {
 }
 
 export default async function UnsubscribePage({ params, searchParams }: Props) {
-  const locale = params.locale
-  const email = typeof searchParams.email === 'string' ? searchParams.email : ''
+  const locale = typeof params.locale === 'string' && params.locale ? params.locale : 'en'
+  const email = Array.isArray(searchParams.email)
+    ? searchParams.email[0] ?? ''
+    : typeof searchParams.email === 'string'
+    ? searchParams.email
+    : ''
   const isSw = locale === 'sw'
+  const homeHref = locale ? `/${locale}` : '/'
 
   let status: 'idle' | 'done' | 'error' = 'idle'
   let errorMessage: string | null = null
@@ -56,7 +60,7 @@ export default async function UnsubscribePage({ params, searchParams }: Props) {
                   ? 'imeondolewa kutoka kwa jarida la Beyond Abroad.'
                   : 'has been removed from the Beyond Abroad newsletter.'}
               </p>
-              <Link href={localePath('/', locale)} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
+              <Link href={homeHref} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
                 {isSw ? 'Rudi nyumbani' : 'Back to Home'}
               </Link>
             </>
@@ -73,7 +77,7 @@ export default async function UnsubscribePage({ params, searchParams }: Props) {
                     ? 'Tafadhali tuma barua pepe kwa carolmwenda09@gmail.com na tutakuondoa kwa mkono.'
                     : 'Please email us at carolmwenda09@gmail.com and we will remove you manually.')}
               </p>
-              <Link href={localePath('/', locale)} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
+              <Link href={homeHref} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
                 {isSw ? 'Rudi nyumbani' : 'Back to Home'}
               </Link>
             </>
@@ -87,7 +91,7 @@ export default async function UnsubscribePage({ params, searchParams }: Props) {
               <p className="text-gray-500 text-sm mb-6">
                 {isSw ? 'Tafadhali tumia kiungo cha kuondoa usajili kwenye barua pepe yako.' : 'Please use the unsubscribe link in your email.'}
               </p>
-              <Link href={localePath('/', locale)} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
+              <Link href={homeHref} className="bg-teal-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-teal-700 transition-colors inline-block">
                 {isSw ? 'Rudi nyumbani' : 'Back to Home'}
               </Link>
             </>
